@@ -3,20 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="signup.css">
-    <title>SHIFTING</title>
+    <title>Sign Up</title>
 </head>
 <body>
-    <header>
-        <h1> SHIFTING </h1>
-        <div> Ayuda </div>
-        <div> Iniciar Sesion </div>
+    <h1>Iniciar Sesión</h1>
+    <form method="POST">
 
+    <!-- esto lo que hace es que un campo oculto para que se genere la llave secreta -->
+    {{formulario.csrf_token}}
 
-    </header>
-    <main>
-        
-    </main>
-    
+    <div>
+        <!-- etiqueta que viene de los campos de forms.py -->
+        {{formulario.name.label}}
+        {{formulario.name(size=40)}}
+    </div>
+
+     <div>
+        {{formulario.lastanme.label}}
+        {{formulario.lastanme(size=40)}}
+    </div>
+
+    <div>
+        {{formulario.lastname2.label}}
+        {{formulario.lastname2(size=40)}}
+    </div>
+
+    <div>
+        {{formulario.email.label}}
+        {{formulario.email(size=40)}}
+    </div>
+
+    <div>
+        {{formulario.enviar}}
+    </div>
+    </form>
 </body>
 </html>

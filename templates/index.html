@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGN UP</title>
+</head>
+<body>
+    <h1>Inicio de Sesion</h1>
+    <h3>Usuarios FLASK</h3>
+    <div>Cantidad de Usuarios:{{total}}
+    </div>
+    <div>
+        <a href="{{url_for('login')}}">Sign UP</a>
+    </div>
+    <div>
+        <ol>
+            <li>Nombre(s)</li>
+            <li>Apellido Paterno</li>
+            <li>Apellido Materno</li>
+            <li>Correo Electronico</li>
+        </ol>
+    </div>
+    <div>
+        {% for user in datos %}
+        <ol>
+            <li>{{user.id}}</li>
+            <li>{{user.name}}</li>
+            <li>{{user.lastname2}}</li>
+            <li>{{user.lastanme}}</li>
+            <li>{{user.email}}</li>
+        </ol>
+        {% endfor %}
+    </div>
+</body>
+</html>
