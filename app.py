@@ -5,7 +5,7 @@ app = Flask(__name__)
 def landing_page():
     return render_template('signup.html')
 
-@app.route('/app/static/admin/')
+@app.route('/static/admin/')
 def api_status():
     data = {
         "status": "ok",
