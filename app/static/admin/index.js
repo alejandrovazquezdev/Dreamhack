@@ -6,20 +6,20 @@
 // https://ilp.interledger-test.dev/bobdev - receptor
 
 // Configuración inicial
- import { createAuthenticatedClient, isFinalizedGrant } from "@interledger/open-payments";
- import fs from "fs";
- import readline from "readline/promises";
+import { createAuthenticatedClient, isFinalizedGrant, OpenPaymentsClientError } from "@interledger/open-payments";
+import fs from "fs";
+import readline from "readline/promises";
 
+async function main() {
 // a. Importar dependencias y configurar el cliente
 const privateKey = fs.readFileSync('private.key', 'utf-8')
 
 // Instanciar el cliente autenticado
 const client = await createAuthenticatedClient({
   walletAddressUrl: 'https://ilp.interledger-test.dev/aledev',
-  privateKey: 'private.Key',
+  privateKey: privateKey,
   keyId: '30c571c4-3941-4221-8206-92eb2bedd81b'
-
-  });
+});
 // b. Crear una instancia del cliente Open Payments
 // c. Cargar la clave privada del archivo
 // d. Configurar las direcciones de las billeteras del remitente y el receptor
@@ -211,5 +211,9 @@ const outgoingPayment = await client.outgoingPayment.create(
   console.log(outgoingPayment);
 
   process.exit();
+}
+
+// Ejecutar la función principal
+main().catch(console.error);
 
 
