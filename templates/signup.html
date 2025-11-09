@@ -11,7 +11,7 @@
         <h1>Registro de Usuario</h1>
         <h3>Crear Nueva Cuenta</h3>
         
-        <form method="POST" action="{{ url_for('login') }}">
+        <form method="POST" action="{{ url_for('signup') }}">
             {{ formulario.hidden_tag() }}
             
             <div class="form-group">
@@ -56,6 +56,30 @@
                 {% if formulario.email.errors %}
                     <ul class="errors">
                     {% for error in formulario.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ formulario.password.label }}
+                {{ formulario.password(class="form-control") }}
+                {% if formulario.password.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.password.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ formulario.confirm_password.label }}
+                {{ formulario.confirm_password(class="form-control") }}
+                {% if formulario.confirm_password.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.confirm_password.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
                     </ul>

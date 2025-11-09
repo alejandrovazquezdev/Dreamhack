@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 from flask_migrate import Migrate
 from db import db
 from models import Usuarios
-from forms import UserFrom
+from forms import UserFrom, UserSignupForm, UserLoginForm
 from functools import wraps
 
 # Crea la app
@@ -94,60 +94,59 @@ def inicio():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     """Registro de nuevos usuarios"""
-    usuarios = Usuarios()
-    userFrom = UserFrom(obj=usuarios)
+    form = UserSignupForm()
     
     if request.method == 'POST':
-        if userFrom.validate_on_submit():
+        if form.validate_on_submit():
             # Verificar si el email ya existe
-            existing_user = Usuarios.query.filter_by(email=userFrom.email.data).first()
+            existing_user = Usuarios.query.filter_by(email=form.email.data).first()
             if existing_user:
                 flash('El email ya está registrado. Por favor inicia sesión.', 'error')
                 return redirect(url_for('login'))
             
             # Crear nuevo usuario
-            userFrom.populate_obj(usuarios)
-            db.session.add(usuarios)
+            usuario = Usuarios()
+            usuario.name = form.name.data
+            usuario.lastanme = form.lastanme.data
+            usuario.lastname2 = form.lastname2.data
+            usuario.email = form.email.data
+            usuario.wallet_link = form.wallet_link.data
+            usuario.set_password(form.password.data)  # Hashear contraseña
+            
+            db.session.add(usuario)
             db.session.commit()
             
             # Iniciar sesión automáticamente después del registro
-            session['user_id'] = usuarios.id
-            session['user_name'] = usuarios.name
-            flash(f'¡Bienvenido {usuarios.name}! Tu cuenta ha sido creada exitosamente.', 'success')
+            session['user_id'] = usuario.id
+            session['user_name'] = usuario.name
+            flash(f'¡Bienvenido {usuario.name}! Tu cuenta ha sido creada exitosamente.', 'success')
             return redirect(url_for('dashboard'))
     
-    return render_template('signup.html', formulario=userFrom)
+    return render_template('signup.html', formulario=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Inicio de sesión de usuarios existentes"""
-    usuarios = Usuarios()
-    userFrom = UserFrom(obj=usuarios)
+    """Inicio de sesión - Solo email y contraseña"""
+    form = UserLoginForm()
     
     if request.method == 'POST':
-        if userFrom.validate_on_submit():
+        if form.validate_on_submit():
             # Buscar usuario por email
-            user = Usuarios.query.filter_by(email=userFrom.email.data).first()
+            user = Usuarios.query.filter_by(email=form.email.data).first()
             
-            if user:
-                # Usuario encontrado - iniciar sesión
+            if user and user.check_password(form.password.data):
+                # Credenciales correctas - iniciar sesión
                 session['user_id'] = user.id
                 session['user_name'] = user.name
                 flash(f'¡Bienvenido de nuevo, {user.name}!', 'success')
                 return redirect(url_for('dashboard'))
             else:
-                # Usuario no encontrado - registrarlo
-                userFrom.populate_obj(usuarios)
-                db.session.add(usuarios)
-                db.session.commit()
-                
-                session['user_id'] = usuarios.id
-                session['user_name'] = usuarios.name
-                flash(f'¡Cuenta creada exitosamente! Bienvenido {usuarios.name}.', 'success')
-                return redirect(url_for('dashboard'))
+                # Credenciales incorrectas
+                flash('Email o contraseña incorrectos. Por favor intenta de nuevo.', 'error')
+                return redirect(url_for('login'))
     
-    return render_template('login.html', formulario=userFrom)
+    return render_template('login.html', formulario=form)
 
 
 @app.route('/logout')

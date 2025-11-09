@@ -1,41 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
 </head>
 <body>
-    <h1>Iniciar Sesión</h1>
-    <form method="POST">
+    <div class="container">
+        <h1>Iniciar Sesión</h1>
+        <h3>Accede a tu cuenta</h3>
+        
+        <form method="POST">
+            {{ formulario.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ formulario.email.label }}
+                {{ formulario.email(class="form-control") }}
+                {% if formulario.email.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
 
-    <!-- esto lo que hace es que un campo oculto para que se genere la llave secreta -->
-    {{formulario.csrf_token}}
+            <div class="form-group">
+                {{ formulario.password.label }}
+                {{ formulario.password(class="form-control") }}
+                {% if formulario.password.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.password.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
 
-    <div>
-        <!-- etiqueta que viene de los campos de forms.py -->
-        {{formulario.name.label}}
-        {{formulario.name(size=40)}}
+            <div class="form-group">
+                {{ formulario.enviar(class="btn-submit") }}
+            </div>
+        </form>
+        
+        <div class="back-link">
+            <a href="{{ url_for('inicio') }}">← Volver al inicio</a>
+        </div>
+        
+        <div class="back-link">
+            ¿No tienes cuenta? <a href="{{ url_for('signup') }}">Regístrate aquí</a>
+        </div>
     </div>
-
-     <div>
-        {{formulario.lastanme.label}}
-        {{formulario.lastanme(size=40)}}
-    </div>
-
-    <div>
-        {{formulario.lastname2.label}}
-        {{formulario.lastname2(size=40)}}
-    </div>
-
-    <div>
-        {{formulario.email.label}}
-        {{formulario.email(size=40)}}
-    </div>
-
-    <div>
-        {{formulario.enviar}}
-    </div>
-    </form>
 </body>
 </html>

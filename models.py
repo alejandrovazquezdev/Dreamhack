@@ -1,6 +1,7 @@
 from db import db
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Modelo de datos
 
@@ -13,7 +14,16 @@ class Usuarios(db.Model):
     lastanme: Mapped[str] = mapped_column()
     lastname2: Mapped[str] = mapped_column()
     email: Mapped[str] = mapped_column(unique=True)
+    password: Mapped[str] = mapped_column()  # Hash de la contraseña
     wallet_link: Mapped[Optional[str]] = mapped_column(nullable=True)
+    
+    def set_password(self, password):
+        """Hashea y guarda la contraseña"""
+        self.password = generate_password_hash(password)
+    
+    def check_password(self, password):
+        """Verifica si la contraseña es correcta"""
+        return check_password_hash(self.password, password)
     
     # metodo str para devolver los metodos de la class
     def __str__(self):
