@@ -21,16 +21,16 @@
 
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="#" class="active"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-comments"></i> Chats</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
+                    <li><a href="{{ url_for('dashboard') }}" class="active"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
+                    <li><a href="#" onclick="alert('Sección de Ayuda - Próximamente')"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
+                    <li><a href="{{ url_for('mis_salas') }}"><i class="icon fa-solid fa-comments"></i> Mis Salas</a></li>
+                    <li><a href="#" onclick="alert('Sección de Facturación - Próximamente')"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
+                    <li><a href="#" onclick="alert('Configuración - Próximamente')"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
                 </ul>
             </nav>
 
             <footer class="sidebar-footer">
-                <a href="{{ url_logout }}">Cerrar sesión</a>
+                <a href="{{ url_for('logout') }}">Cerrar sesión</a>
             </footer>
 
         </aside>
@@ -40,24 +40,205 @@
             <h1 class="page-title">SHIFTING</h1>
             
             <div class="main-actions">
-                <a href="crear-chat.html" class="btn btn-primary">
+                <a href="{{ url_for('crateChat') }}" class="btn btn-primary">
                     <i class="fa-solid fa-plus"></i>
                     Iniciar nuevo chat
                 </a>
-                <a href="#" class="btn btn-primary">
+                <button onclick="mostrarModalUnirse()" class="btn btn-primary">
                     <i class="fa-solid fa-check-to-slot"></i>
                     Unirse a un chat
-                </a>
-                <button class="btn-icon">
+                </button>
+                <button class="btn-icon" onclick="alert('No tienes nuevas notificaciones')">
                     <i class="fa-solid fa-bell"></i>
                 </button>
             </div>
 
-            <a href="#" class="btn btn-primary floating-support-btn">
+            <!-- Modal para unirse a una sala -->
+            <div id="modalUnirse" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2><i class="fa-solid fa-right-to-bracket"></i> Unirse a una Sala</h2>
+                        <button class="btn-close" onclick="cerrarModalUnirse()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{{ url_for('unirse_por_codigo') }}">
+                            <div class="form-group">
+                                <label for="codigo-sala">Código de la sala:</label>
+                                <input 
+                                    type="text" 
+                                    id="codigo-sala" 
+                                    name="codigo" 
+                                    placeholder="Ej: 85441291" 
+                                    required
+                                    pattern="[0-9]{8}"
+                                    maxlength="8"
+                                    class="input-codigo"
+                                >
+                                <small>Ingresa el código de 8 dígitos que te compartieron</small>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="cerrarModalUnirse()" class="btn btn-text">Cancelar</button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-arrow-right"></i> Unirse
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" onclick="alert('Contacta con soporte: soporte@shifting.com')" class="btn btn-primary floating-support-btn">
                 <i class="fa-solid fa-headset"></i>
                 Soporte
             </a>
 
         </main>
     </div>
+
+<script>
+    function mostrarModalUnirse() {
+        document.getElementById('modalUnirse').style.display = 'flex';
+        document.getElementById('codigo-sala').focus();
+    }
+    
+    function cerrarModalUnirse() {
+        document.getElementById('modalUnirse').style.display = 'none';
+        document.getElementById('codigo-sala').value = '';
+    }
+    
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+        const modal = document.getElementById('modalUnirse');
+        if (event.target === modal) {
+            cerrarModalUnirse();
+        }
+    }
+    
+    // Cerrar con tecla ESC
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            cerrarModalUnirse();
+        }
+    });
+</script>
+
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(4px);
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h2 {
+        margin: 0;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #9ca3af;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+    
+    .btn-close:hover {
+        background: #f3f4f6;
+        color: #1f2937;
+    }
+    
+    .modal-body {
+        padding: 24px;
+    }
+    
+    .modal-body .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .modal-body label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #374151;
+    }
+    
+    .input-codigo {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+        letter-spacing: 4px;
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        transition: all 0.2s;
+        font-family: 'Courier New', monospace;
+    }
+    
+    .input-codigo:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    .modal-body small {
+        display: block;
+        color: #6b7280;
+        margin-top: 8px;
+        font-size: 0.875rem;
+    }
+    
+    .modal-footer {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid #e5e7eb;
+    }
+</style>
+
 {% endblock %}

@@ -1,0 +1,282 @@
+{% extends 'base-template-user.html' %}
+
+{% block styles %}
+{% endblock %}
+
+{% block content %}
+    
+<div class="app-container">
+    
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <span class="sidebar-username">{{ session.get('user_name', 'Usuario') }}</span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
+                <li><a href="#"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
+                <li><a href="{{ url_for('mis_salas') }}" class="active"><i class="icon fa-solid fa-comments"></i> Mis Salas</a></li> 
+                <li><a href="#"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
+                <li><a href="#"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
+            </ul>
+        </nav>
+        <footer class="sidebar-footer">
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        </footer>
+    </aside>
+
+    <main class="main-content">
+        
+        <div class="content-card">
+            <div class="content-card-header">
+                <h2>Detalles de la Sala</h2>
+                <p class="content-card-subtitle">
+                    <i class="fa-solid fa-info-circle"></i>
+                    Información completa de la sala de negociación
+                </p>
+            </div>
+
+            <div class="content-card-body">
+                
+                <div class="sala-info">
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-hashtag"></i> Código de Sala:</label>
+                        <div class="info-value">
+                            <strong>{{ sala.codigo }}</strong>
+                            <button class="btn-icon-share" onclick="copiarTexto('codigo-sala')" title="Copiar código">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                            <input type="hidden" id="codigo-sala" value="{{ sala.codigo }}">
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-link"></i> Link de Sala:</label>
+                        <div class="info-value">
+                            <input type="text" id="link-sala" value="{{ sala.get_link() }}" readonly style="width: 100%; max-width: 400px;">
+                            <button class="btn-icon-share" onclick="copiarTexto('link-sala')" title="Copiar link">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-box"></i> Producto:</label>
+                        <div class="info-value"><strong>{{ sala.nombre_producto }}</strong></div>
+                    </div>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-dollar-sign"></i> Precio:</label>
+                        <div class="info-value"><strong>${{ "%.2f"|format(sala.precio) }}</strong></div>
+                    </div>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-certificate"></i> Condición:</label>
+                        <div class="info-value">
+                            <span class="badge {% if sala.condicion == 'Nuevo' %}badge-success{% else %}badge-info{% endif %}">
+                                {{ sala.condicion }}
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if sala.descripcion %}
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-align-left"></i> Descripción:</label>
+                        <div class="info-value">{{ sala.descripcion }}</div>
+                    </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-user"></i> Creado por:</label>
+                        <div class="info-value">{{ creador.name }} {{ creador.lastanme }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-calendar"></i> Fecha de creación:</label>
+                        <div class="info-value">{{ sala.fecha_creacion.strftime('%d/%m/%Y %H:%M') }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-circle"></i> Estado:</label>
+                        <div class="info-value">
+                            <span class="badge {% if sala.activa %}badge-success{% else %}badge-danger{% endif %}">
+                                {% if sala.activa %}Activa{% else %}Inactiva{% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="info-row">
+                        <label><i class="fa-solid fa-users"></i> Miembros ({{ miembros|length + 1 }}):</label>
+                        <div class="info-value">
+                            <div class="miembros-lista">
+                                <div class="miembro-item">
+                                    <i class="fa-solid fa-crown" style="color: #fbbf24;"></i>
+                                    <strong>{{ creador.name }} {{ creador.lastanme }}</strong>
+                                    <span class="badge badge-warning">Vendedor</span>
+                                </div>
+                                {% for miembro, usuario in miembros %}
+                                <div class="miembro-item">
+                                    <i class="fa-solid fa-user"></i>
+                                    {{ usuario.name }} {{ usuario.lastanme }}
+                                    <span class="badge badge-info">{{ miembro.rol|capitalize }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="content-card-footer">
+                {% if not es_creador and not ya_unido and sala.activa %}
+                    <form method="POST" action="{{ url_for('unirse_sala', codigo=sala.codigo) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-user-plus"></i> Unirse a la sala
+                        </button>
+                    </form>
+                {% elif ya_unido and not es_creador %}
+                    <form method="POST" action="{{ url_for('salir_sala', codigo=sala.codigo) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-text">
+                            <i class="fa-solid fa-door-open"></i> Salir de la sala
+                        </button>
+                    </form>
+                    <span class="badge badge-success" style="padding: 10px 20px;">
+                        <i class="fa-solid fa-check"></i> Ya estás en esta sala
+                    </span>
+                {% elif es_creador %}
+                    <span class="badge badge-warning" style="padding: 10px 20px;">
+                        <i class="fa-solid fa-crown"></i> Eres el creador
+                    </span>
+                {% endif %}
+                <a href="{{ url_for('mis_salas') }}" class="btn-text">Ver todas mis salas</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Volver al inicio</a>
+            </div>
+        </div>
+
+        <a href="#" onclick="alert('Contacta con soporte: soporte@shifting.com')" class="btn btn-primary floating-support-btn">
+            <i class="fa-solid fa-headset"></i>
+            Soporte
+        </a>
+
+    </main>
+</div>
+
+<script>
+    function copiarTexto(inputId) {
+        const input = document.getElementById(inputId);
+        let texto = input.value;
+        
+        // Si es un input hidden, usar el value directamente
+        if (input.type === 'hidden') {
+            texto = input.value;
+        } else {
+            input.select();
+            input.setSelectionRange(0, 99999);
+        }
+        
+        navigator.clipboard.writeText(texto).then(() => {
+            alert('✓ Copiado al portapapeles: ' + texto);
+        }).catch(err => {
+            console.error('Error al copiar:', err);
+        });
+    }
+</script>
+
+<style>
+    .sala-info {
+        padding: 20px;
+    }
+    
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-row label {
+        flex: 0 0 200px;
+        font-weight: 600;
+        color: #555;
+    }
+    
+    .info-row .info-value {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+    
+    .badge-success {
+        background-color: #10b981;
+        color: white;
+    }
+    
+    .badge-info {
+        background-color: #3b82f6;
+        color: white;
+    }
+    
+    .badge-danger {
+        background-color: #ef4444;
+        color: white;
+    }
+    
+    .badge-warning {
+        background-color: #fbbf24;
+        color: #1f2937;
+    }
+    
+    hr {
+        margin: 20px 0;
+        border: none;
+        border-top: 2px solid #e5e7eb;
+    }
+    
+    .miembros-lista {
+        width: 100%;
+    }
+    
+    .miembro-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: #f9fafb;
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .miembro-item i {
+        color: #667eea;
+    }
+    
+    .miembro-item:first-child {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border: 1px solid rgba(102, 126, 234, 0.3);
+    }
+</style>
+
+{% endblock %}

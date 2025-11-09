@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from flask_migrate import Migrate
 from db import db
-from models import Usuarios, Sala
+from models import Usuarios, Sala, MiembroSala
 from forms import UserFrom, UserSignupForm, UserLoginForm
 from functools import wraps
 
@@ -49,6 +49,7 @@ def inject_urls():
         url_dashboard=url_for('dashboard'),
         url_crear_chat=url_for('crateChat'),
         url_invitar_chat=url_for('inviteChat'),
+        url_mis_salas=url_for('mis_salas'),
     )
 
 # Middleware para reemplazar automáticamente links hardcodeados en HTML
@@ -207,15 +208,158 @@ def inviteChat():
     # Obtener la última sala creada
     sala_id = session.get('ultima_sala_id')
     
+    print(f"DEBUG: sala_id en sesión: {sala_id}")  # Debug
+    
     if not sala_id:
         flash('No hay ninguna sala creada. Crea una primero.', 'warning')
         return redirect(url_for('crateChat'))
     
     sala = Sala.query.get(sala_id)
     
+    print(f"DEBUG: sala encontrada: {sala}")  # Debug
+    if sala:
+        print(f"DEBUG: código: {sala.codigo}, link: {sala.get_link()}")  # Debug
+    
     if not sala:
         flash('Sala no encontrada.', 'error')
         return redirect(url_for('crateChat'))
+    
+    return render_template('invitar-chat.html', sala=sala)
+
+
+@app.route('/sala/<codigo>')
+@login_required
+def ver_sala(codigo):
+    """Ver detalles de una sala específica por código"""
+    sala = Sala.query.filter_by(codigo=codigo).first()
+    
+    if not sala:
+        flash('Sala no encontrada.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    # Obtener información del creador
+    creador = Usuarios.query.get(sala.creador_id)
+    
+    # Verificar si el usuario actual es el creador
+    user_id = session.get('user_id')
+    es_creador = (user_id == sala.creador_id)
+    
+    # Verificar si el usuario ya está en la sala
+    ya_unido = MiembroSala.query.filter_by(sala_id=sala.id, usuario_id=user_id).first() is not None
+    
+    # Obtener todos los miembros de la sala
+    miembros = db.session.query(MiembroSala, Usuarios).join(
+        Usuarios, MiembroSala.usuario_id == Usuarios.id
+    ).filter(MiembroSala.sala_id == sala.id).all()
+    
+    return render_template('ver-sala.html', 
+                         sala=sala, 
+                         creador=creador, 
+                         es_creador=es_creador,
+                         ya_unido=ya_unido,
+                         miembros=miembros)
+
+
+@app.route('/sala/<codigo>/unirse', methods=['POST'])
+@login_required
+def unirse_sala(codigo):
+    """Unirse a una sala como comprador"""
+    sala = Sala.query.filter_by(codigo=codigo).first()
+    
+    if not sala:
+        flash('Sala no encontrada.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    user_id = session.get('user_id')
+    
+    # Verificar que no sea el creador
+    if user_id == sala.creador_id:
+        flash('No puedes unirte a tu propia sala.', 'warning')
+        return redirect(url_for('ver_sala', codigo=codigo))
+    
+    # Verificar si ya está unido
+    miembro_existente = MiembroSala.query.filter_by(sala_id=sala.id, usuario_id=user_id).first()
+    if miembro_existente:
+        flash('Ya estás unido a esta sala.', 'info')
+        return redirect(url_for('ver_sala', codigo=codigo))
+    
+    # Crear nueva membresía
+    nuevo_miembro = MiembroSala()
+    nuevo_miembro.sala_id = sala.id
+    nuevo_miembro.usuario_id = user_id
+    nuevo_miembro.rol = 'comprador'
+    
+    db.session.add(nuevo_miembro)
+    db.session.commit()
+    
+    flash(f'¡Te has unido exitosamente a la sala "{sala.nombre_producto}"!', 'success')
+    return redirect(url_for('ver_sala', codigo=codigo))
+
+
+@app.route('/sala/<codigo>/salir', methods=['POST'])
+@login_required
+def salir_sala(codigo):
+    """Salir de una sala"""
+    sala = Sala.query.filter_by(codigo=codigo).first()
+    
+    if not sala:
+        flash('Sala no encontrada.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    user_id = session.get('user_id')
+    
+    # Buscar membresía
+    miembro = MiembroSala.query.filter_by(sala_id=sala.id, usuario_id=user_id).first()
+    
+    if not miembro:
+        flash('No estás unido a esta sala.', 'warning')
+        return redirect(url_for('ver_sala', codigo=codigo))
+    
+    db.session.delete(miembro)
+    db.session.commit()
+    
+    flash('Has salido de la sala.', 'info')
+    return redirect(url_for('mis_salas'))
+
+
+@app.route('/unirse-por-codigo', methods=['POST'])
+@login_required
+def unirse_por_codigo():
+    """Unirse a una sala ingresando el código"""
+    codigo = request.form.get('codigo', '').strip()
+    
+    if not codigo:
+        flash('Debes ingresar un código de sala.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    # Verificar que el código tenga 8 dígitos
+    if len(codigo) != 8 or not codigo.isdigit():
+        flash('El código debe tener exactamente 8 dígitos.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    # Buscar la sala
+    sala = Sala.query.filter_by(codigo=codigo).first()
+    
+    if not sala:
+        flash(f'No existe ninguna sala con el código {codigo}.', 'error')
+        return redirect(url_for('dashboard'))
+    
+    if not sala.activa:
+        flash('Esta sala ya no está activa.', 'warning')
+        return redirect(url_for('dashboard'))
+    
+    # Redirigir a la página de la sala para que se una
+    return redirect(url_for('ver_sala', codigo=codigo))
+
+
+@app.route('/mis-salas')
+@login_required
+def mis_salas():
+    """Listar todas las salas creadas por el usuario actual"""
+    user_id = session.get('user_id')
+    salas = Sala.query.filter_by(creador_id=user_id, activa=True).order_by(Sala.fecha_creacion.desc()).all()
+    
+    return render_template('mis-salas.html', salas=salas)
     
     return render_template('invitar-chat.html', sala=sala)
 

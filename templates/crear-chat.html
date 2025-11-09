@@ -14,19 +14,19 @@
                 <div class="sidebar-avatar">
                     <i class="fa-solid fa-user"></i>
                 </div>
-                <span class="sidebar-username">Nombre</span>
+                <span class="sidebar-username">{{ session.get('user_name', 'Usuario') }}</span>
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="#"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
-                    <li><a href="#" class="icon"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-comments"></i> Chats</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
+                    <li><a href="{{ url_for('dashboard') }}"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
+                    <li><a href="#" onclick="alert('Sección de Ayuda - Próximamente')"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
+                    <li><a href="{{ url_for('mis_salas') }}"><i class="icon fa-solid fa-comments"></i> Mis Salas</a></li>
+                    <li><a href="#" onclick="alert('Sección de Facturación - Próximamente')"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
+                    <li><a href="#" onclick="alert('Configuración - Próximamente')"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
                 </ul>
             </nav>
             <footer class="sidebar-footer">
-                <a href="#">Cerrar sesión</a>
+                <a href="{{ url_for('logout') }}">Cerrar sesión</a>
             </footer>
         </aside>
 
@@ -39,46 +39,46 @@
                     Intenta ser lo mas preciso posible en la información que ingreses
                 </p>
 
-                <form action="#">
+                <form method="POST" action="{{ url_for('crateChat') }}">
                     <div class="form-grid">
                         
                         <div class="form-column">
                             <div class="form-group">
                                 <label for="nombre-producto">Nombre del producto: *</label>
-                                <input type="text" id="nombre-producto">
+                                <input type="text" id="nombre-producto" name="nombre-producto" required>
                             </div>
                             <div class="form-group">
                                 <label for="condicion-producto">El producto es: *</label>
-                                <select id="condicion-producto">
-                                    <option value="nuevo" selected>Nuevo</option>
-                                    <option value="seminuevo">Seminuevo</option>
-                                    <option value="usado">Usado</option>
+                                <select id="condicion-producto" name="condicion-producto" required>
+                                    <option value="Nuevo" selected>Nuevo</option>
+                                    <option value="Seminuevo">Seminuevo</option>
+                                    <option value="Usado">Usado</option>
 
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="precio-producto">Precio: *</label>
-                                <input type="number" id="precio-producto">
+                                <input type="number" id="precio-producto" name="precio-producto" required step="0.01" min="0">
                             </div>
                         </div>
 
                         <div class="form-column">
                             <div class="form-group full-height">
                                 <label for="descripcion-producto">Descripción: *</label>
-                                <textarea id="descripcion-producto"></textarea>
+                                <textarea id="descripcion-producto" name="descripcion-producto" required></textarea>
                             </div>
                         </div>
 
                     </div>
 
                     <div class="form-footer">
-                        <a href="index.html" class="btn btn-text">Cancelar</a>
-                        <a href="invitar-chat.html" class="btn btn-secondary">Continuar</a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-text">Cancelar</a>
+                        <button type="submit" class="btn btn-secondary">Continuar</button>
                     </div>
                 </form>
             </div>
 
-            <a href="#" class="btn btn-primary floating-support-btn">
+            <a href="#" onclick="alert('Contacta con soporte: soporte@shifting.com')" class="btn btn-primary floating-support-btn">
                 <i class="fa-solid fa-headset"></i>
                 Soporte
             </a>

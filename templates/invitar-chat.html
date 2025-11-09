@@ -15,19 +15,19 @@
                 <div class="sidebar-avatar">
                     <i class="fa-solid fa-user"></i>
                 </div>
-                <span class="sidebar-username">Nombre</span>
+                <span class="sidebar-username">{{ session.get('user_name', 'Usuario') }}</span>
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="#"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
-                    <li><a href="#" class="icon"><i class="icon fa-solid fa-comments"></i> Chats</a></li> 
-                    <li><a href="#"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
-                    <li><a href="#"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
+                    <li><a href="{{ url_for('dashboard') }}"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
+                    <li><a href="#" onclick="alert('Sección de Ayuda - Próximamente')"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
+                    <li><a href="{{ url_for('mis_salas') }}"><i class="icon fa-solid fa-comments"></i> Mis Salas</a></li> 
+                    <li><a href="#" onclick="alert('Sección de Facturación - Próximamente')"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
+                    <li><a href="#" onclick="alert('Configuración - Próximamente')"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
                 </ul>
             </nav>
             <footer class="sidebar-footer">
-                <a href="#">Cerrar sesión</a>
+                <a href="{{ url_for('logout') }}">Cerrar sesión</a>
             </footer>
         </aside>
 
@@ -83,12 +83,12 @@
                 </div>
 
                 <div class="content-card-footer">
-                    <a href="index.html" class="btn-text">Cancelar</a>
-                    <button type="submit" class="btn btn-secondary">Aceptar</button>
+                    <a href="{{ url_for('dashboard') }}" class="btn-text">Volver al inicio</a>
+                    <a href="{{ url_for('mis_salas') }}" class="btn btn-secondary">Ver mis salas</a>
                 </div>
             </div>
 
-            <a href="#" class="btn btn-primary floating-support-btn">
+            <a href="#" onclick="alert('Contacta con soporte: soporte@shifting.com')" class="btn btn-primary floating-support-btn">
                 <i class="fa-solid fa-headset"></i>
                 Soporte
             </a>

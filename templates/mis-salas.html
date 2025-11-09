@@ -1,0 +1,239 @@
+{% extends 'base-template-user.html' %}
+
+{% block styles %}
+{% endblock %}
+
+{% block content %}
+    
+<div class="app-container">
+    
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-avatar">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <span class="sidebar-username">{{ session.get('user_name', 'Usuario') }}</span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
+                <li><a href="#"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
+                <li><a href="{{ url_for('mis_salas') }}" class="active"><i class="icon fa-solid fa-comments"></i> Mis Salas</a></li> 
+                <li><a href="#"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
+                <li><a href="#"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
+            </ul>
+        </nav>
+        <footer class="sidebar-footer">
+            <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+        </footer>
+    </aside>
+
+    <main class="main-content">
+        
+        <div class="content-card">
+            <div class="content-card-header">
+                <h2>Mis Salas de Negociación</h2>
+                <p class="content-card-subtitle">
+                    <i class="fa-solid fa-list"></i>
+                    Todas tus salas creadas ({{ salas|length }} salas activas)
+                </p>
+            </div>
+
+            <div class="content-card-body">
+                
+                {% if salas %}
+                    <div class="salas-grid">
+                        {% for sala in salas %}
+                        <div class="sala-card">
+                            <div class="sala-card-header">
+                                <h3>{{ sala.nombre_producto }}</h3>
+                                <span class="sala-precio">${{ "%.2f"|format(sala.precio) }}</span>
+                            </div>
+                            
+                            <div class="sala-card-body">
+                                <div class="sala-info-item">
+                                    <i class="fa-solid fa-hashtag"></i>
+                                    <span>Código: <strong>{{ sala.codigo }}</strong></span>
+                                </div>
+                                
+                                <div class="sala-info-item">
+                                    <i class="fa-solid fa-certificate"></i>
+                                    <span>Condición: <strong>{{ sala.condicion }}</strong></span>
+                                </div>
+                                
+                                <div class="sala-info-item">
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <span>Creada: {{ sala.fecha_creacion.strftime('%d/%m/%Y') }}</span>
+                                </div>
+                                
+                                {% if sala.descripcion %}
+                                <div class="sala-descripcion">
+                                    <i class="fa-solid fa-align-left"></i>
+                                    <p>{{ sala.descripcion[:100] }}{% if sala.descripcion|length > 100 %}...{% endif %}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="sala-card-footer">
+                                <a href="{{ url_for('ver_sala', codigo=sala.codigo) }}" class="btn btn-sm btn-primary">
+                                    <i class="fa-solid fa-eye"></i> Ver detalles
+                                </a>
+                                <button class="btn btn-sm btn-secondary" onclick="copiarLink('{{ sala.get_link() }}')">
+                                    <i class="fa-solid fa-share"></i> Compartir
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fa-solid fa-inbox" style="font-size: 4rem; color: #ccc;"></i>
+                        <h3>No tienes salas creadas</h3>
+                        <p>Crea tu primera sala de negociación para empezar a vender</p>
+                        <a href="{{ url_for('crateChat') }}" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Crear primera sala
+                        </a>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <div class="content-card-footer">
+                <a href="{{ url_for('dashboard') }}" class="btn-text">Volver al inicio</a>
+                <a href="{{ url_for('crateChat') }}" class="btn btn-secondary">
+                    <i class="fa-solid fa-plus"></i> Nueva sala
+                </a>
+            </div>
+        </div>
+
+        <a href="#" onclick="alert('Contacta con soporte: soporte@shifting.com')" class="btn btn-primary floating-support-btn">
+            <i class="fa-solid fa-headset"></i>
+            Soporte
+        </a>
+
+    </main>
+</div>
+
+<script>
+    function copiarLink(link) {
+        navigator.clipboard.writeText(link).then(() => {
+            alert('✓ Link copiado al portapapeles:\n' + link);
+        }).catch(err => {
+            console.error('Error al copiar:', err);
+        });
+    }
+</script>
+
+<style>
+    .salas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .sala-card {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .sala-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    
+    .sala-card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .sala-card-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        flex: 1;
+    }
+    
+    .sala-precio {
+        font-size: 1.5rem;
+        font-weight: bold;
+        background: rgba(255,255,255,0.2);
+        padding: 5px 15px;
+        border-radius: 20px;
+    }
+    
+    .sala-card-body {
+        padding: 20px;
+    }
+    
+    .sala-info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        color: #555;
+    }
+    
+    .sala-info-item i {
+        color: #667eea;
+        width: 20px;
+    }
+    
+    .sala-descripcion {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        gap: 10px;
+    }
+    
+    .sala-descripcion i {
+        color: #667eea;
+        margin-top: 3px;
+    }
+    
+    .sala-descripcion p {
+        margin: 0;
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+    
+    .sala-card-footer {
+        padding: 15px 20px;
+        background: #f9fafb;
+        display: flex;
+        gap: 10px;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .btn-sm {
+        padding: 8px 16px;
+        font-size: 0.875rem;
+        flex: 1;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+    
+    .empty-state h3 {
+        margin: 20px 0 10px;
+        color: #333;
+    }
+    
+    .empty-state p {
+        margin-bottom: 30px;
+    }
+</style>
+
+{% endblock %}

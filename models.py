@@ -70,7 +70,26 @@ class Sala(db.Model):
     
     def get_link(self):
         """Retorna el link completo para compartir"""
-        return f"Shifting.com/user/{self.codigo}"
+        return f"http://127.0.0.1:5000/sala/{self.codigo}"
     
     def __str__(self):
         return f'Sala {self.codigo} - {self.nombre_producto} (${self.precio})'
+
+
+class MiembroSala(db.Model):
+    """Modelo para registrar usuarios que se unen a salas"""
+    __tablename__ = 'miembros_sala'
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sala_id: Mapped[int] = mapped_column(db.ForeignKey('salas.id'))
+    usuario_id: Mapped[int] = mapped_column(db.ForeignKey('usuarios.id'))
+    fecha_union: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    rol: Mapped[str] = mapped_column(default='comprador')  # 'vendedor' o 'comprador'
+    
+    # Constraint único para evitar duplicados
+    __table_args__ = (
+        db.UniqueConstraint('sala_id', 'usuario_id', name='unique_miembro_sala'),
+    )
+    
+    def __str__(self):
+        return f'Usuario {self.usuario_id} en Sala {self.sala_id}'
