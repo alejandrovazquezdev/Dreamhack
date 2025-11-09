@@ -74,3 +74,4 @@ fi
 # Call hash to forget past commands. Without forgetting
 # past commands the $PATH changes we made may not be respected
 hash -r 2> /dev/null
+export FLASK_APP="app.py"
