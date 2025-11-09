@@ -1,11 +1,8 @@
-from flask import Flask, render_template,request,redirect,url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import Mapped, mapped_column
-# from .db import db
+from db import db
 from models import Usuarios
 from forms import UserFrom
-from flask import Flask, jsonify 
 
 app = Flask(__name__)
 
@@ -16,16 +13,13 @@ NAME_DB = 'demo'
 
 URL_DB = f'postgresql://{USER_DB}:{USER_PASS}@{SERVER_DB}/{NAME_DB}'
 
-#Variable de configuracion que se integra a Flask 
+# Variable de configuracion que se integra a Flask 
 app.config['SQLALCHEMY_DATABASE_URI'] = URL_DB
-db.init_app(app) #inicializar la aplicacion
+app.config['SECRET_KEY'] = 'YOLOLO'
+db.init_app(app)  # inicializar la aplicacion
 
-
-#Migrar el modelo
-migrate = Migrate(app,db)
-
-app.config['SECRET_KEY']='YOLOLO'
-app = Flask(__name__)
+# Migrar el modelo
+migrate = Migrate(app, db)
 
 @app.route('/')
 def inicio():

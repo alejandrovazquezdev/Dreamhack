@@ -1,24 +1,12 @@
-from app import db
-from sqlalchemy.orm import Mapped, mapped_column
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired, Email
 
-#Modelo de datos
+# Formulario de Usuario
 
-class Usuarios(db.Model):
-    #campos
-    # id = db.Column(db.Integer, primary_key=True) #Antes se utilizaba así
-    
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column()
-    lastanme: Mapped[str] = mapped_column()
-    lastname2: Mapped[str] = mapped_column()
-    email: Mapped[str] = mapped_column(unique=True)
-    
-    #metodo str para devolver los metodos de la class
-    def __str__(self):
-        return (
-            f'id:{self.id}'
-            f'nombre(s){self.name}'
-            f'apellido Materno{self.lastanme}'
-            f'apellido Paterno{self.lastname2}'
-            f'correo Electrónico{self.email}'
-        )
+class UserFrom(FlaskForm):
+    name = StringField('Nombre(s)', validators=[DataRequired()])
+    lastanme = StringField('Apellido Materno', validators=[DataRequired()])
+    lastname2 = StringField('Apellido Paterno', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    enviar = SubmitField('Guardar')

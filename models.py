@@ -1,10 +1,10 @@
-from app import db
+from db import db
 from sqlalchemy.orm import Mapped, mapped_column
 
-#Modelo de datos
+# Modelo de datos
 
 class Usuarios(db.Model):
-    #campos
+    # campos
     # id = db.Column(db.Integer, primary_key=True) #Antes se utilizaba así
     
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -13,7 +13,7 @@ class Usuarios(db.Model):
     lastname2: Mapped[str] = mapped_column()
     email: Mapped[str] = mapped_column(unique=True)
     
-    #metodo str para devolver los metodos de la class
+    # metodo str para devolver los metodos de la class
     def __str__(self):
         return (
             f'id:{self.id}'
