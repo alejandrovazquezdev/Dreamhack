@@ -7,7 +7,6 @@ El sistema permite a los usuarios crear "salas" para productos/servicios, donde 
 ## Características Principales
 
 - Pagos P2P seguros con Open Payments SDK
-- Interfaz profesional sin emojis, diseño limpio
 - Precios fijos no manipulables por usuarios
 - Validación estricta de montos y Payment Pointers
 - Rastreo de transacciones en base de datos
