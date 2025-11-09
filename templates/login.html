@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Usuario</h1>
+        <h3>Crear Nueva Cuenta</h3>
+        
+        <form method="POST" action="{{ url_for('login') }}">
+            {{ formulario.hidden_tag() }}
+            
+            <div class="form-group">
+                {{ formulario.name.label }}
+                {{ formulario.name(class="form-control") }}
+                {% if formulario.name.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.name.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ formulario.lastanme.label }}
+                {{ formulario.lastanme(class="form-control") }}
+                {% if formulario.lastanme.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.lastanme.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ formulario.lastname2.label }}
+                {{ formulario.lastname2(class="form-control") }}
+                {% if formulario.lastname2.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.lastname2.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ formulario.email.label }}
+                {{ formulario.email(class="form-control") }}
+                {% if formulario.email.errors %}
+                    <ul class="errors">
+                    {% for error in formulario.email.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                {{ formulario.enviar(class="btn-submit") }}
+            </div>
+        </form>
+        
+        <div class="back-link">
+            <a href="{{ url_for('inicio') }}">← Volver al inicio</a>
+        </div>
+    </div>
+</body>
+</html>

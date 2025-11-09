@@ -18,7 +18,7 @@ class Usuarios(db.Model):
         return (
             f'id:{self.id}'
             f'nombre(s){self.name}'
-            f'apellido Materno{self.lastanme}'
-            f'apellido Paterno{self.lastname2}'
+            f'apellido Paterno{self.lastanme}'
+            f'apellido Materno{self.lastname2}'
             f'correo Electrónico{self.email}'
         )
