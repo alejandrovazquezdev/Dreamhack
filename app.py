@@ -2,7 +2,7 @@ from flask import Flask, render_template,request,redirect,url_for
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Mapped, mapped_column
-from .db import db
+# from .db import db
 from models import Usuarios
 from forms import UserFrom
 from flask import Flask, jsonify 
