@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shifting - Tranquilidad garantizada</title>
     
-    <link rel="stylesheet" href="static/base.css">
+    <link rel="stylesheet" href="{{ url_for ("static", filename="css/base.css") }}">
 
-    <link rel="stylesheet" href="static/styles-principal.css">
+    <link rel="stylesheet" href="{{ url_for ("static", filename="css/styles-principal.css") }}">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -20,8 +20,8 @@
             
             <nav class="navbar-links">
                 <a href="#" class="btn btn-secondary">Ayuda</a>
-                <a href="#" class="btn btn-secondary">Iniciar sesión</a>
-                <a href="#" class="btn btn-primary">Crear cuenta</a>
+                <a href="login.html" class="btn btn-secondary">Iniciar sesión</a>
+                <a href="signup.html" class="btn btn-primary">Crear cuenta</a>
             </nav>
 
             <button class="navbar-toggle" aria-label="Abrir menú">
@@ -42,7 +42,7 @@
                     Open Payments.
                 </p>
                 <p class="hero-powered-by">Powered by Open Payments</p>
-                <a href="#" class="btn btn-primary">Crear cuenta</a>
+                <a href="signup.html" class="btn btn-primary">Crear cuenta</a>
             </div>
 
             <div class="hero-graphic">
@@ -50,6 +50,5 @@
 
         </main>
     </div>
-
 </body>
 </html>
