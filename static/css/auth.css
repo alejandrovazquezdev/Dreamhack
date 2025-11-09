@@ -1,0 +1,457 @@
+/* === Estilos para Login y Signup === */
+/* Mantiene la consistencia con el diseño de la aplicación */
+
+/* Importar variables del base.css */
+:root {
+  --color-primary-dark: #4A00E0;
+  --color-primary-main: #8E2DE2;
+  --color-primary-nav: #5e35b1;
+  --color-text-light: #FFFFFF;
+  --color-text-dark: #333333;
+  --color-background-light: #FFFFFF;
+  --font-family-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --border-radius-pill: 50px;
+}
+
+/* Reseteo global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text-dark);
+}
+
+/* Navbar superior */
+.auth-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.auth-navbar-logo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: opacity 0.3s ease;
+}
+
+.auth-navbar-logo:hover {
+  opacity: 0.8;
+}
+
+.auth-navbar-links {
+  display: flex;
+  gap: 15px;
+}
+
+.auth-navbar-links a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 24px;
+  border-radius: var(--border-radius-pill);
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.auth-navbar-links a:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenedor principal */
+.auth-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* Card del formulario */
+.auth-card {
+  background: white;
+  border-radius: 24px;
+  padding: 45px;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 520px;
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header del formulario */
+.auth-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.auth-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  margin: 0 auto 20px;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.auth-header h1 {
+  font-size: 2.2rem;
+  color: var(--color-primary-dark);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.auth-header p {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Formulario */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.auth-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.auth-form-group label {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+  margin-left: 4px;
+}
+
+.auth-form-group input {
+  width: 100%;
+  padding: 15px 18px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  background-color: #fafafa;
+}
+
+.auth-form-group input:focus {
+  outline: none;
+  border-color: var(--color-primary-main);
+  background-color: white;
+  box-shadow: 0 0 0 4px rgba(142, 45, 226, 0.08);
+}
+
+.auth-form-group input::placeholder {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+/* Grid para campos múltiples */
+.auth-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+/* Mensajes de error */
+.auth-errors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.auth-errors li {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.auth-errors li:before {
+  content: "⚠";
+  position: absolute;
+  left: 0;
+  font-size: 1rem;
+}
+
+/* Botón submit */
+.auth-btn-submit {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.auth-btn-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4);
+}
+
+.auth-btn-submit:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Enlaces adicionales */
+.auth-links {
+  text-align: center;
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top: 1px solid #e0e0e0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.auth-links a {
+  color: var(--color-primary-main);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: #667eea;
+  text-decoration: underline;
+}
+
+.auth-back-link {
+  display: block;
+  text-align: center;
+  margin-top: 18px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.auth-back-link a {
+  color: var(--color-primary-main);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.auth-back-link a:hover {
+  gap: 10px;
+  color: #667eea;
+}
+
+/* Flash messages */
+.auth-flash {
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-flash.success {
+  background-color: #d4edda;
+  color: #155724;
+  border-left: 4px solid #28a745;
+}
+
+.auth-flash.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-left: 4px solid #dc3545;
+}
+
+.auth-flash.warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border-left: 4px solid #ffc107;
+}
+
+.auth-flash.info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  border-left: 4px solid #17a2b8;
+}
+
+/* Divider decorativo */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 25px 0;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.auth-divider span {
+  padding: 0 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-navbar {
+    padding: 15px 20px;
+  }
+  
+  .auth-navbar-logo {
+    font-size: 1.8rem;
+  }
+  
+  .auth-navbar-links {
+    gap: 10px;
+  }
+  
+  .auth-navbar-links a {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+  
+  .auth-card {
+    padding: 35px 25px;
+    max-width: 95%;
+  }
+  
+  .auth-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .auth-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.7rem;
+  }
+  
+  .auth-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-main {
+    padding: 20px 15px;
+  }
+  
+  .auth-card {
+    padding: 30px 20px;
+    border-radius: 18px;
+  }
+  
+  .auth-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .auth-navbar-logo {
+    font-size: 1.5rem;
+  }
+  
+  .auth-navbar-links {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .auth-form-group input {
+    padding: 13px 15px;
+    font-size: 0.95rem;
+  }
+  
+  .auth-btn-submit {
+    padding: 14px;
+    font-size: 1rem;
+  }
+}
+
+/* Mejoras de accesibilidad */
+.auth-form-group input:focus-visible {
+  outline: 2px solid var(--color-primary-main);
+  outline-offset: 2px;
+}
+
+.auth-btn-submit:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Estados de carga */
+.auth-btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.auth-loading {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

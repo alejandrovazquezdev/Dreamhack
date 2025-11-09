@@ -3,109 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Usuario</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <title>Registro - Shifting</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Registro de Usuario</h1>
-        <h3>Crear Nueva Cuenta</h3>
-        
-        <form method="POST" action="{{ url_for('signup') }}">
-            {{ formulario.hidden_tag() }}
-            
-            <div class="form-group">
-                {{ formulario.name.label }}
-                {{ formulario.name(class="form-control") }}
-                {% if formulario.name.errors %}
-                    <ul class="errors">
-                    {% for error in formulario.name.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ formulario.lastanme.label }}
-                {{ formulario.lastanme(class="form-control") }}
-                {% if formulario.lastanme.errors %}
-                    <ul class="errors">
-                    {% for error in formulario.lastanme.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ formulario.lastname2.label }}
-                {{ formulario.lastname2(class="form-control") }}
-                {% if formulario.lastname2.errors %}
-                    <ul class="errors">
-                    {% for error in formulario.lastname2.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ formulario.email.label }}
-                {{ formulario.email(class="form-control") }}
-                {% if formulario.email.errors %}
-                    <ul class="errors">
-                    {% for error in formulario.email.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ formulario.password.label }}
-                {{ formulario.password(class="form-control") }}
-                {% if formulario.password.errors %}
-                    <ul class="errors">
-                    {% for error in formulario.password.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ formulario.confirm_password.label }}
-                {{ formulario.confirm_password(class="form-control") }}
-                {% if formulario.confirm_password.errors %}
-                    <ul class="errors">
-                    {% for error in formulario.confirm_password.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ formulario.wallet_link.label }}
-                {{ formulario.wallet_link(class="form-control") }}
-                {% if formulario.wallet_link.errors %}
-                    <ul class="errors">
-                    {% for error in formulario.wallet_link.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                {{ formulario.enviar(class="btn-submit") }}
-            </div>
-        </form>
-        
-        <div class="back-link">
-            <a href="{{ url_for('inicio') }}">← Volver al inicio</a>
+    <nav class="auth-navbar">
+        <a href="{{ url_for('inicio') }}" class="auth-navbar-logo">SHIFTING</a>
+        <div class="auth-navbar-links">
+            <a href="{{ url_for('inicio') }}">Inicio</a>
+            <a href="{{ url_for('login') }}">Iniciar sesión</a>
         </div>
-    </div>
+    </nav>
+
+    <main class="auth-main">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h1>Crear Nueva Cuenta</h1>
+                <p>Únete a Shifting y realiza transacciones seguras</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
+                {{ formulario.hidden_tag() }}
+                
+                <div class="auth-form-grid">
+                    <div class="auth-form-group">
+                        {{ formulario.name.label }}
+                        {{ formulario.name(placeholder="Ej: Juan") }}
+                        {% if formulario.name.errors %}
+                            <ul class="auth-errors">
+                            {% for error in formulario.name.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="auth-form-group">
+                        {{ formulario.lastanme.label }}
+                        {{ formulario.lastanme(placeholder="Apellido Paterno") }}
+                        {% if formulario.lastanme.errors %}
+                            <ul class="auth-errors">
+                            {% for error in formulario.lastanme.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="auth-form-group">
+                    {{ formulario.lastname2.label }}
+                    {{ formulario.lastname2(placeholder="Apellido Materno") }}
+                    {% if formulario.lastname2.errors %}
+                        <ul class="auth-errors">
+                        {% for error in formulario.lastname2.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="auth-form-group">
+                    {{ formulario.email.label }}
+                    {{ formulario.email(placeholder="correo@ejemplo.com", type="email") }}
+                    {% if formulario.email.errors %}
+                        <ul class="auth-errors">
+                        {% for error in formulario.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="auth-form-group">
+                    {{ formulario.password.label }}
+                    {{ formulario.password(placeholder="Mínimo 6 caracteres") }}
+                    {% if formulario.password.errors %}
+                        <ul class="auth-errors">
+                        {% for error in formulario.password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="auth-form-group">
+                    {{ formulario.confirm_password.label }}
+                    {{ formulario.confirm_password(placeholder="Confirma tu contraseña") }}
+                    {% if formulario.confirm_password.errors %}
+                        <ul class="auth-errors">
+                        {% for error in formulario.confirm_password.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                
+                <div class="auth-form-group">
+                    {{ formulario.wallet_link.label }}
+                    {{ formulario.wallet_link(placeholder="https://... (Opcional)") }}
+                    {% if formulario.wallet_link.errors %}
+                        <ul class="auth-errors">
+                        {% for error in formulario.wallet_link.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                {{ formulario.enviar(class="auth-btn-submit") }}
+            </form>
+
+            <div class="auth-links">
+                ¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a>
+            </div>
+            
+            <div class="auth-back-link">
+                <a href="{{ url_for('inicio') }}">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='route-fixer.js') }}"></script>
 </body>
 </html>
