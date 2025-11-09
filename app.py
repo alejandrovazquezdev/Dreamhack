@@ -4,6 +4,7 @@ from db import db
 from models import Usuarios
 from forms import UserFrom
 
+# Crea la app
 app = Flask(__name__)
 
 USER_DB = 'postgres'
@@ -23,9 +24,10 @@ migrate = Migrate(app, db)
 
 @app.route('/')
 def inicio():
-    usuarios = Usuarios.query.all() #Consulta a toda la tabla de Usuarios
-    total_usuarios = Usuarios.query.count() #count es una funcion para contar cuantos registros tengo en la tabla Usuarios
-    return render_template('index.html', total = total_usuarios, datos = usuarios)
+    # usuarios = Usuarios.query.all() #Consulta a toda la tabla de Usuarios
+    # total_usuarios = Usuarios.query.count() #count es una funcion para contar cuantos registros tengo en la tabla Usuarios
+    # return render_template('index.html', total = total_usuarios, datos = usuarios)
+    return render_template('principal.html')
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -41,6 +43,15 @@ def login():
             return redirect(url_for('inicio'))
     return render_template('login.html', formulario = userFrom)
 
+@app.route('/crear-chat', methods=[])
+def crateChat():
+    return render_template ("crear-chat.html")
+
+@app.route('/invitar-chat')
+def inviteChat():
+    return render_template("invitar-chat.html")
+
+@app.route('/signup', methods=[])
 
 
 @app.route('/static/admin/')

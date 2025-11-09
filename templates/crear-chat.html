@@ -1,0 +1,89 @@
+{% extends 'base-template-user.html' %}
+    
+    {% block styles %}
+        
+    {% endblock %}
+        
+
+{% block content %}
+    
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span class="sidebar-username">Nombre</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
+                    <li><a href="#" class="icon"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
+                    <li><a href="#"><i class="icon fa-solid fa-comments"></i> Chats</a></li>
+                    <li><a href="#"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
+                    <li><a href="#"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
+                </ul>
+            </nav>
+            <footer class="sidebar-footer">
+                <a href="#">Cerrar sesión</a>
+            </footer>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="form-container">
+                <h2>1. Ingresa los datos del articulo que deseas vender</h2>
+                <p class="form-subtitle">
+                    <i class="fa-solid fa-diamond"></i>
+                    Intenta ser lo mas preciso posible en la información que ingreses
+                </p>
+
+                <form action="#">
+                    <div class="form-grid">
+                        
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="nombre-producto">Nombre del producto: *</label>
+                                <input type="text" id="nombre-producto">
+                            </div>
+                            <div class="form-group">
+                                <label for="condicion-producto">El producto es: *</label>
+                                <select id="condicion-producto">
+                                    <option value="nuevo" selected>Nuevo</option>
+                                    <option value="seminuevo">Seminuevo</option>
+                                    <option value="usado">Usado</option>
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="precio-producto">Precio: *</label>
+                                <input type="number" id="precio-producto">
+                            </div>
+                        </div>
+
+                        <div class="form-column">
+                            <div class="form-group full-height">
+                                <label for="descripcion-producto">Descripción: *</label>
+                                <textarea id="descripcion-producto"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-footer">
+                        <a href="index.html" class="btn btn-text">Cancelar</a>
+                        <a href="invitar-chat.html" class="btn btn-secondary">Continuar</a>
+                    </div>
+                </form>
+            </div>
+
+            <a href="#" class="btn btn-primary floating-support-btn">
+                <i class="fa-solid fa-headset"></i>
+                Soporte
+            </a>
+
+        </main>
+    </div>
+    
+{% endblock %}

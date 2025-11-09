@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Shifting {% endblock %} </title>
+
+    
+    {% block styles %}{% endblock styles %}
+    <link rel="stylesheet" href="{{ url_for("static", filename="base.css") }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+        {% block content %}
+
+        {% endblock %}
+
+        
+        {% block scripts %}
+        <script src=""></script>
+        {% endblock %}
+            
+</body>
+</html>

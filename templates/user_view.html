@@ -1,0 +1,63 @@
+{% extends 'base-template-user.html' %}
+
+
+{% block styles %}
+    
+{% endblock styles %}
+
+
+{% block content %}
+    
+    <div class="app-container">
+        
+        <aside class="sidebar">
+            
+            <div class="sidebar-header">
+                <div class="sidebar-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <span class="sidebar-username">Nombre</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="#" class="active"><i class="icon fa-solid fa-house"></i> Inicio</a></li>
+                    <li><a href="#"><i class="icon fa-solid fa-circle-question"></i> Ayuda</a></li>
+                    <li><a href="#"><i class="icon fa-solid fa-comments"></i> Chats</a></li>
+                    <li><a href="#"><i class="icon fa-solid fa-file-invoice"></i> Facturación</a></li>
+                    <li><a href="#"><i class="icon fa-solid fa-gears"></i> Configuración</a></li>
+                </ul>
+            </nav>
+
+            <footer class="sidebar-footer">
+                <a href="#">Cerrar sesión</a>
+            </footer>
+
+        </aside>
+
+        <main class="main-content">
+            
+            <h1 class="page-title">SHIFTING</h1>
+            
+            <div class="main-actions">
+                <a href="crear-chat.html" class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Iniciar nuevo chat
+                </a>
+                <a href="#" class="btn btn-primary">
+                    <i class="fa-solid fa-check-to-slot"></i>
+                    Unirse a un chat
+                </a>
+                <button class="btn-icon">
+                    <i class="fa-solid fa-bell"></i>
+                </button>
+            </div>
+
+            <a href="#" class="btn btn-primary floating-support-btn">
+                <i class="fa-solid fa-headset"></i>
+                Soporte
+            </a>
+
+        </main>
+    </div>
+{% endblock %}

@@ -1,0 +1,365 @@
+@import url("createChat.css");
+/* --- 1. Variables Globales (Paleta de Estilo) --- */
+:root {
+  /* Colores */
+  --color-primary-dark: #4A00E0; /* Morado oscuro de la barra lateral */
+  --color-primary-main: #8E2DE2; /* Morado principal de botones */
+  --color-primary-nav: #5e35b1;  /* Morado de los items de navegación */
+  --color-text-light: #FFFFFF;
+  --color-text-dark: #333333;
+  --color-text-title: #4A00E0;   /* Color del título "SHIFTING" */
+  --color-background-light: #FFFFFF;
+
+  /* Tipografía */
+  --font-family-base: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Tamaños y Espaciado */
+  --sidebar-width: 250px;
+  --border-radius-nav: 10px;
+  --border-radius-pill: 50px;
+}
+
+/* --- 2. Estilos Globales y Reseteo --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
+  height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+/* --- 3. Estructura Principal (Layout) --- */
+.app-container {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  height: 100vh;
+}
+.sidebar {
+  background-color: var(--color-primary-dark);
+  color: var(--color-text-light);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+.main-content {
+  background-color: var(--color-background-light);
+  padding: 40px;
+  height: 100vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* --- 4. Componentes de Barra Lateral (Sidebar) --- */
+.sidebar-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.sidebar-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--color-primary-nav);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 40px;
+}
+.sidebar-username {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.sidebar-nav {
+  flex-grow: 1;
+}
+.sidebar-nav ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+ a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--border-radius-nav);
+  background-color: var(--color-primary-nav);
+  color: var(--color-text-light);
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+  background-color: var(--color-primary-main);
+}
+.sidebar-nav a .icon {
+  font-size: 1.2rem;
+  width: 20px;
+  text-align: center;
+}
+.sidebar-footer {
+  margin-top: auto;
+  text-align: center;
+}
+.sidebar-footer a {
+  padding: 10px;
+  font-weight: 500;
+  color: #c0b0f0;
+  transition: color 0.3s ease;
+}
+.sidebar-footer a:hover {
+  color: var(--color-text-light);
+}
+
+/* --- 5. Componentes de Botones (Reutilizables) --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: var(--border-radius-pill);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.btn-primary {
+  background-color: var(--color-primary-main);
+  color: var(--color-text-light);
+}
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(142, 45, 226, 0.3);
+}
+.btn-secondary {
+  background-color: var(--color-primary-nav);
+  color: var(--color-text-light);
+}
+.btn-secondary:hover {
+  background-color: #7a5fb5;
+}
+.btn-text {
+  background: transparent;
+  color: var(--color-text-light);
+  font-weight: 500;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.btn-text:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--color-primary-main);
+  font-size: 1.8rem;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+.btn-icon:hover {
+  background-color: #f0eaff;
+}
+.floating-support-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+}
+
+/* --- 6. Componentes de Contenido (NUEVO) --- */
+
+/* Contenedor principal para formularios y vistas */
+.content-card {
+  background-color: var(--color-primary-main);
+  color: var(--color-text-light);
+  padding: 32px;
+  border-radius: 20px;
+  max-width: 900px;
+  margin: 0 auto; /* Centra la tarjeta */
+  box-shadow: 0 10px 30px rgba(142, 45, 226, 0.3);
+}
+
+.content-card-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.content-card-subtitle {
+  font-size: 0.9rem;
+  color: #e0c8f5; /* Un lila claro */
+  margin-top: 8px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.content-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-primary-nav);
+}
+
+/* Componentes de Formulario */
+.form-grid {
+  display: grid;
+  padding: 20px;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--border-radius-nav);
+  font-family: var(--font-family-base);
+  font-size: 1rem;
+  color: var(--color-text-dark);
+}
+
+.form-group textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.form-group.full-height {
+  height: 100%;
+}
+.form-group.full-height textarea {
+  height: 100%;
+}
+
+/* Componentes de "Compartir" (NUEVO) */
+.share-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Separador para los items de compartir */
+.share-item + .share-item {
+  margin-top: 20px;
+}
+
+.share-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap; /* Para responsividad */
+}
+
+.share-input-wrapper input[type="text"] {
+  flex-grow: 1; /* El input toma el espacio disponible */
+  min-width: 200px; /* Ancho mínimo antes de envolver */
+}
+
+.share-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-icon-share {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-primary-nav);
+  color: var(--color-text-light);
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-icon-share:hover {
+  background-color: #7a5fb5;
+}
+
+
+/* --- 7. Estilos Responsive Base --- */
+@media (max-width: 900px) {
+  /* En tablets, la rejilla de formulario se apila */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  /* En móvil, la barra lateral desaparece */
+  .app-container {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    display: none;
+  }
+  .main-content {
+    padding: 20px;
+  }
+  .floating-support-btn {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* En móviles pequeños, los pies de tarjeta cambian */
+  .content-card-footer {
+    flex-direction: column-reverse; /* Botón principal arriba */
+    width: 100%;
+  }
+  .content-card-footer .btn {
+    width: 100%;
+  }
+
+  .share-input-wrapper input[type="text"] {
+    width: 100%;
+    flex-grow: 0;
+  }
+  .share-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

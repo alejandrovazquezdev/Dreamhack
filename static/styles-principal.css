@@ -1,0 +1,120 @@
+/* --- Estilos Específicos de la Landing Page --- */
+
+/* Contenedor general para centrar contenido en páginas públicas */
+.public-container {
+    width: 100%;
+    max-width: 1200px; /* Ancho máximo de contenido */
+    margin: 0 auto;
+    padding: 0 40px; /* Espaciado lateral */
+}
+
+/* Cabecera pública */
+.public-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 0;
+    width: 100%;
+}
+
+.navbar-logo {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Botón de hamburguesa (oculto en desktop) */
+.navbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--color-primary-dark);
+    cursor: pointer;
+}
+
+/* Sección Hero */
+.hero-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 40px;
+    padding: 60px 0;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.hero-heading {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.hero-subtext {
+    font-size: 1.1rem;
+    color: var(--color-text-dark);
+    margin-bottom: 24px;
+    max-width: 500px; /* Limita ancho del texto */
+}
+
+.hero-powered-by {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 30px;
+}
+
+/* Gráfico de la derecha */
+.hero-graphic {
+    background-color: var(--color-primary-main);
+    width: 100%;
+    min-height: 450px;
+    border-radius: 40px;
+}
+
+/* --- Estilos Responsive (Layout Público) --- */
+@media (max-width: 768px) {
+    .public-container {
+        padding: 0 20px; /* Menos padding en móvil */
+    }
+
+    /* Activa el menú hamburguesa */
+    .navbar-links {
+        display: none; /* Oculta links en móvil */
+    }
+    .navbar-toggle {
+        display: block; /* Muestra el botón hamburguesa */
+    }
+    
+    /* Apila la sección hero */
+    .hero-section {
+        grid-template-columns: 1fr; /* Una columna */
+        text-align: center;
+        padding: 40px 0;
+    }
+    
+    .hero-content {
+        align-items: center; /* Centra el contenido */
+        order: 2; /* Pone el texto debajo de la imagen */
+    }
+
+    .hero-graphic {
+        order: 1; /* Pone la imagen arriba */
+        min-height: 250px; /* Más pequeña en móvil */
+    }
+
+    .hero-heading {
+        font-size: 2.5rem; /* Título más pequeño */
+    }
+}
