@@ -1,30 +1,30 @@
-# Shifting — Plataforma P2P de Pagos con Open Payments
+# Shifting — P2P Payment Platform with Open Payments
 
-**Shifting** es una aplicación web de marketplace P2P que facilita transacciones seguras entre compradores y vendedores usando la tecnología **Open Payments** e **Interledger Protocol (ILP)**. 
+**Shifting** is a P2P marketplace web application that facilitates secure transactions between buyers and sellers using **Open Payments** and **Interledger Protocol (ILP)** technology.
 
-El sistema permite a los usuarios crear "salas" para productos/servicios, donde los compradores pueden realizar pagos seguros usando sus wallets de Interledger, eliminando intermediarios y comisiones excesivas.
+The system allows users to create "rooms" for products/services, where buyers can make secure payments using their Interledger wallets, eliminating intermediaries and excessive fees.
 
-## Características Principales
+## Main Features
 
-- Pagos P2P seguros con Open Payments SDK
-- Precios fijos no manipulables por usuarios
-- Validación estricta de montos y Payment Pointers
-- Rastreo de transacciones en base de datos
-- Sistema de salas para organizar productos/servicios
-- Autenticación de usuarios con sesiones seguras
+- Secure P2P payments with Open Payments SDK
+- Fixed prices non-manipulable by users
+- Strict validation of amounts and Payment Pointers
+- Transaction tracking in database
+- Room system to organize products/services
+- User authentication with secure sessions
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 Dreamhack/
-├── app.py                      # Aplicación Flask principal
-├── models.py                   # Modelos de base de datos (Usuarios, Sala, Transaccion)
-├── db.py                       # Configuración SQLAlchemy
-├── forms.py                    # Formularios Flask-WTF
-├── init_db.sql                 # Script de inicialización de BD
-├── start-services.sh           # Script para iniciar todo
-├── stop-services.sh            # Script para detener servicios
-├── templates/                  # Plantillas HTML
+├── app.py                      # Main Flask application
+├── models.py                   # Database models (Users, Room, Transaction)
+├── db.py                       # SQLAlchemy configuration
+├── forms.py                    # Flask-WTF forms
+├── init_db.sql                 # Database initialization script
+├── start-services.sh           # Script to start everything
+├── stop-services.sh            # Script to stop services
+├── templates/                  # HTML templates
 │   ├── index.html
 │   ├── login.html
 │   ├── signup.html
@@ -32,104 +32,104 @@ Dreamhack/
 │   ├── crear-chat.html
 │   └── ver-sala.html
 ├── static/
-│   ├── css/                    # Estilos separados por vista
+│   ├── css/                    # Styles separated by view
 │   └── admin/
-│       ├── payment-service-v2.js  # Servicio de pagos Node.js
-│       ├── private.key            # Clave privada para Open Payments
+│       ├── payment-service-v2.js  # Node.js payment service
+│       ├── private.key            # Private key for Open Payments
 │       └── package.json
-└── venv/                       # Entorno virtual Python
+└── venv/                       # Python virtual environment
 ```
 
-## Tecnologías
+## Technologies
 
 ### Backend
-- **Python 3.13** con Flask 3.1.2
-- **PostgreSQL** con SQLAlchemy ORM
-- **Flask-Migrate** para migraciones
-- **Flask-WTF** para formularios
+- **Python 3.13** with Flask 3.1.2
+- **PostgreSQL** with SQLAlchemy ORM
+- **Flask-Migrate** for migrations
+- **Flask-WTF** for forms
 
 ### Payment Service
 - **Node.js 22.0.0**
 - **@interledger/open-payments** v7.1.3
-- **Express.js** para API REST
+- **Express.js** for REST API
 
 ### Frontend
-- HTML5, CSS3, JavaScript vanilla
-- Diseño responsive profesional
+- HTML5, CSS3, vanilla JavaScript
+- Professional responsive design
 
-## Instalación y Configuración
+## Installation and Configuration
 
-### Prerrequisitos
+### Prerequisites
 
 ```bash
-# Verificar versiones
+# Check versions
 python3 --version  # 3.13+
 node --version     # 22.0+
-psql --version     # PostgreSQL instalado
+psql --version     # PostgreSQL installed
 ```
 
-### 1. Clonar y configurar entorno Python
+### 1. Clone and configure Python environment
 
 ```bash
 cd /home/alephantom/Hackaton/Dreamhack
 
-# Activar entorno virtual (si existe)
+# Activate virtual environment (if it exists)
 source venv/bin/activate
 
-# O crear uno nuevo
+# Or create a new one
 python3 -m venv venv
 source venv/bin/activate
 
-# Instalar dependencias
+# Install dependencies
 pip install -r requeriments.txt
 ```
 
-### 2. Configurar PostgreSQL
+### 2. Configure PostgreSQL
 
 ```bash
-# Crear base de datos
+# Create database
 sudo -u postgres psql
 CREATE DATABASE dreamhack_db;
-CREATE USER dreamhack_user WITH PASSWORD 'tu_password';
+CREATE USER dreamhack_user WITH PASSWORD 'your_password';
 GRANT ALL PRIVILEGES ON DATABASE dreamhack_db TO dreamhack_user;
 \q
 
-# Ejecutar script de inicialización
+# Execute initialization script
 psql -U dreamhack_user -d dreamhack_db -f init_db.sql
 ```
 
-### 3. Configurar Payment Service (Node.js)
+### 3. Configure Payment Service (Node.js)
 
 ```bash
 cd static/admin
 npm install
 ```
 
-### 4. Configurar credenciales de Open Payments
+### 4. Configure Open Payments credentials
 
-Asegúrate de tener un archivo `static/admin/private.key` con tu clave privada de Interledger.
+Make sure you have a `static/admin/private.key` file with your Interledger private key.
 
-Para obtener credenciales de prueba:
-- Visita: https://interledger-test.dev
-- Crea wallets de prueba (aledev, aliciadev, bobdev, etc.)
-- Descarga las claves privadas
+To obtain test credentials:
+- Visit: https://interledger-test.dev
+- Create test wallets (aledev, aliciadev, bobdev, etc.)
+- Download the private keys
 
-## Iniciar la Aplicación
+## Start the Application
 
-### Opción 1: Script automático (Recomendado)
+### Option 1: Automatic script (Recommended)
 
 ```bash
 ./start-services.sh
 ```
 
-Este script:
-1. Detiene servicios anteriores
-2. Inicia Payment Service (Node.js) en puerto 3001
-3. Inicia Flask Backend en puerto 5000
-4. Verifica que ambos respondan correctamente
-5. Muestra URLs y PIDs de los procesos
+This script:
+1. Stops previous services
+2. Starts Payment Service (Node.js) on port 3001
+3. Starts Flask Backend on port 5000
+4. Verifies both respond correctly
+5. Shows URLs and PIDs of the processes
 
-### Opción 2: Manual
+### Option 2: Manual
 
 ```bash
 # Terminal 1 - Payment Service
@@ -140,7 +140,7 @@ node payment-service-v2.js
 python app.py
 ```
 
-### Verificar que todo funcione
+### Verify everything works
 
 ```bash
 # Payment Service
@@ -150,65 +150,65 @@ curl http://localhost:3001/health
 curl http://127.0.0.1:5000
 ```
 
-## Detener Servicios
+## Stop Services
 
 ```bash
 ./stop-services.sh
 ```
 
-O manualmente:
+Or manually:
 ```bash
 pkill -f "node.*payment-service"
 pkill -f "python.*app.py"
 ```
 
-## Uso de la Aplicación
+## Using the Application
 
-### 1. Registro e Inicio de Sesión
-- Ve a http://127.0.0.1:5000
-- Crea una cuenta o inicia sesión
-- Configura tu Payment Pointer ($domain/user)
+### 1. Registration and Login
+- Go to http://127.0.0.1:5000
+- Create an account or log in
+- Configure your Payment Pointer ($domain/user)
 
-### 2. Crear una Sala (Vendedor)
-- Click en "Crear Sala"
-- Ingresa: nombre, descripción, precio
-- Añade tu Payment Pointer para recibir pagos
-- Comparte el código de la sala
+### 2. Create a Room (Seller)
+- Click on "Create Room"
+- Enter: name, description, price
+- Add your Payment Pointer to receive payments
+- Share the room code
 
-### 3. Unirse y Pagar (Comprador)
-- Ingresa el código de sala
-- Revisa detalles del producto
-- Selecciona tu wallet de pago
-- Click en "Pagar con Open Payments"
-- Autoriza en la página de Interledger
-- El sistema completa automáticamente la transacción
+### 3. Join and Pay (Buyer)
+- Enter the room code
+- Review product details
+- Select your payment wallet
+- Click on "Pay with Open Payments"
+- Authorize on the Interledger page
+- The system automatically completes the transaction
 
-## Endpoints API
+## API Endpoints
 
-### Flask Backend (Puerto 5000)
+### Flask Backend (Port 5000)
 
-| Método | Ruta | Descripción |
+| Method | Route | Description |
 |--------|------|-------------|
-| GET | `/` | Página principal |
-| GET/POST | `/login` | Inicio de sesión |
-| GET/POST | `/signup` | Registro de usuarios |
-| GET | `/principal` | Dashboard del usuario |
-| POST | `/crear-sala` | Crear nueva sala |
-| GET | `/ver-sala/<codigo>` | Ver detalles de sala |
-| POST | `/initiate-payment` | Iniciar pago Open Payments |
-| GET | `/payment-callback/<id>` | Callback después de autorización |
+| GET | `/` | Home page |
+| GET/POST | `/login` | Login |
+| GET/POST | `/signup` | User registration |
+| GET | `/principal` | User dashboard |
+| POST | `/crear-sala` | Create new room |
+| GET | `/ver-sala/<codigo>` | View room details |
+| POST | `/initiate-payment` | Initiate Open Payments payment |
+| GET | `/payment-callback/<id>` | Callback after authorization |
 
-### Payment Service (Puerto 3001)
+### Payment Service (Port 3001)
 
-| Método | Ruta | Descripción |
+| Method | Route | Description |
 |--------|------|-------------|
-| GET | `/health` | Estado del servicio |
-| POST | `/initiate-payment` | Crear grant y quote de pago |
-| POST | `/complete-payment/:id` | Completar pago autorizado |
+| GET | `/health` | Service status |
+| POST | `/initiate-payment` | Create grant and payment quote |
+| POST | `/complete-payment/:id` | Complete authorized payment |
 
-## Base de Datos
+## Database
 
-### Tablas Principales
+### Main Tables
 
 **usuarios**
 - `id`, `username`, `email`, `password`, `wallet_link`
@@ -219,33 +219,38 @@ pkill -f "python.*app.py"
 **transaccion**
 - `id`, `transaction_id`, `sala_id`, `sender_id`, `receiver_wallet`, `amount`, `currency`, `status`
 
-## Seguridad
+## Security
 
-- Contraseñas hasheadas con bcrypt
-- Sesiones Flask seguras
-- Validación de montos en backend
-- Payment Pointer validado ($domain/user)
-- CORS configurado correctamente
-- ADVERTENCIA: NO usar en producción sin configurar variables de entorno
+- Passwords hashed with bcrypt
+- Secure Flask sessions
+- Backend amount validation
+- Validated Payment Pointer ($domain/user)
+- CORS properly configured
+- WARNING: DO NOT use in production without configuring environment variables
 
-## Solución de Problemas
+## Troubleshooting
 
-### Payment Service no inicia
+## Troubleshooting
+
+### Payment Service won't start
 ```bash
 cd static/admin
 npm install
 node payment-service-v2.js
 ```
 
-### Flask no conecta a PostgreSQL
-- Verifica credenciales en `app.py`
-- Asegúrate de que PostgreSQL esté corriendo: `sudo systemctl status postgresql`
+### Flask won't connect to PostgreSQL
+- Verify credentials in `app.py`
+- Make sure PostgreSQL is running: `sudo systemctl status postgresql`
 
-### Errores de importación Python
+### Python import errors
 ```bash
 source venv/bin/activate
 pip install -r requeriments.txt
 ```
+
+## Logs
+
 
 ## Logs
 
@@ -255,7 +260,10 @@ pip install -r requeriments.txt
 ## Testing
 
 ```bash
-# Probar pago de prueba
+## Testing
+
+```bash
+# Test a sample payment
 curl -X POST http://localhost:3001/initiate-payment \
   -H "Content-Type: application/json" \
   -d '{
@@ -263,6 +271,22 @@ curl -X POST http://localhost:3001/initiate-payment \
     "amount": 1000,
     "transactionId": "test-001"
   }'
+```
+
+## Roadmap
+
+- [ ] Implement complete outgoing payment
+- [ ] Add verification of completed payments
+- [ ] Rating system
+- [ ] Real-time chat between buyer/seller
+- [ ] Administration panel
+- [ ] Automated tests
+
+## Contributions
+
+---
+
+For more complete technical documentation, check the `docs/` folder.
 ```
 
 ## Roadmap
@@ -278,4 +302,3 @@ curl -X POST http://localhost:3001/initiate-payment \
 
 ---
 
-Para documentación técnica más completa, revisar la carpeta `docs/`.
