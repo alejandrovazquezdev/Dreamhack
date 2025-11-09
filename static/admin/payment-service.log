@@ -1,0 +1,42 @@
+nohup: ignoring input
+Iniciando servicio de pagos Open Payments...
+✓ Cliente Open Payments inicializado correctamente
+✓ Wallet configurada: https://ilp.interledger-test.dev/aledev
+
+🚀 Servicio de pagos ejecutándose en http://localhost:3001
+📍 Health check: http://localhost:3001/health
+
+
+--- Iniciando nuevo pago ---
+Transaction ID: test-tx-001
+Monto: 1000
+Wallet receptor: $ilp.interledger-test.dev/aliciadev
+Sender URL: https://ilp.interledger-test.dev/aledev
+Receiver URL: https://ilp.interledger-test.dev/aliciadev
+Obteniendo wallet addresses...
+Sender wallet: {
+  id: 'https://ilp.interledger-test.dev/aledev',
+  assetCode: 'EUR',
+  assetScale: 2
+}
+Receiver wallet: {
+  id: 'https://ilp.interledger-test.dev/aliciadev',
+  assetCode: 'EUR',
+  assetScale: 2
+}
+Solicitando grant para incoming payment...
+✓ Grant para incoming payment obtenido
+Creando incoming payment con monto: { assetCode: 'EUR', assetScale: 2, value: '100000' }
+✓ Incoming payment creado: https://ilp.interledger-test.dev/f537937b-7016-481b-b655-9f0d1014822c/incoming-payments/d133455b-49d6-402e-80c2-7ba7e9c2baf7
+Solicitando grant para quote...
+✓ Grant para quote obtenido
+Creando quote...
+✓ Quote creado: {
+  debitAmount: { value: '100100', assetCode: 'EUR', assetScale: 2 },
+  receiveAmount: { value: '100000', assetCode: 'EUR', assetScale: 2 }
+}
+Solicitando grant para outgoing payment con interacción...
+✓ Grant para outgoing payment obtenido
+✓ URL de interacción: https://auth.interledger-test.dev/interact/2842a3d5-e04f-428d-a13f-933e65160710/7E445C8CD7A144BC?clientName=test-aledev&clientUri=https%3A%2F%2Filp.interledger-test.dev%2Faledev
+--- Pago iniciado exitosamente ---
+

@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from flask_migrate import Migrate
 from db import db
-from models import Usuarios, Sala, MiembroSala
+from models import Usuarios, Sala, MiembroSala, Transaccion
 from forms import UserFrom, UserSignupForm, UserLoginForm
 from functools import wraps
+import requests
+import uuid
+import json
+from datetime import datetime
 
 # Crea la app
 app = Flask(__name__)
@@ -364,6 +368,219 @@ def mis_salas():
     return render_template('invitar-chat.html', sala=sala)
 
 
+# ========== RUTAS DE PAGOS OPEN PAYMENTS ==========
+
+PAYMENTS_SERVICE_URL = 'http://localhost:3001'
+
+@app.route('/initiate-payment', methods=['POST'])
+@login_required
+def initiate_payment():
+    """Iniciar un pago usando Open Payments"""
+    try:
+        data = request.get_json()
+        
+        # Validar datos requeridos
+        required_fields = ['receiverWallet', 'amount', 'salaId']
+        for field in required_fields:
+            if field not in data:
+                return jsonify({'success': False, 'error': f'Campo requerido: {field}'}), 400
+        
+        # Obtener información del usuario actual
+        user_id = session.get('user_id')
+        usuario = Usuarios.query.get(user_id)
+        
+        if not usuario:
+            return jsonify({'success': False, 'error': 'Usuario no encontrado'}), 404
+        
+        # Verificar que la sala exista y esté activa
+        sala = Sala.query.get(data['salaId'])
+        if not sala:
+            return jsonify({'success': False, 'error': 'Sala no encontrada'}), 404
+        
+        if not sala.activa:
+            return jsonify({'success': False, 'error': 'Esta sala ya no está disponible'}), 403
+        
+        # Verificar que el usuario no sea el creador de la sala
+        if sala.creador_id == user_id:
+            return jsonify({'success': False, 'error': 'No puedes pagar tu propio producto'}), 403
+        
+        # VALIDACIÓN CRÍTICA: El monto debe ser exactamente el precio de la sala
+        amount_received = float(data['amount'])
+        if abs(amount_received - sala.precio) > 0.01:  # Tolerancia de 1 centavo por redondeo
+            return jsonify({
+                'success': False, 
+                'error': f'Monto inválido. El precio exacto es ${sala.precio:.2f} USD'
+            }), 400
+        
+        # Validar formato del Payment Pointer
+        receiver_wallet = data['receiverWallet'].strip()
+        if not receiver_wallet.startswith('$'):
+            return jsonify({
+                'success': False, 
+                'error': 'La billetera debe usar formato Payment Pointer ($domain/user)'
+            }), 400
+        
+        # Generar ID único para la transacción
+        transaction_id = str(uuid.uuid4())
+        
+        # Crear registro de transacción en la base de datos ANTES del pago
+        nueva_transaccion = Transaccion(
+            transaction_id=transaction_id,
+            sala_id=sala.id,
+            sender_id=user_id,
+            receiver_wallet=receiver_wallet,
+            amount=sala.precio,  # Usar siempre el precio exacto de la sala
+            currency='USD',
+            status='initiated'
+        )
+        
+        try:
+            db.session.add(nueva_transaccion)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'success': False, 'error': 'Error creando transacción'}), 500
+        
+        # Preparar datos para el servicio de pagos
+        payment_data = {
+            'senderWallet': '$ilp.interledger-test.dev/aledev',  # Usar siempre aledev como sender (tenemos las keys)
+            'receiverWallet': receiver_wallet,
+            'amount': sala.precio,  # Usar siempre el precio exacto de la sala
+            'currency': 'USD',
+            'transactionId': transaction_id
+        }
+        
+        # Llamar al servicio de pagos
+        try:
+            import requests
+            response = requests.post(f'{PAYMENTS_SERVICE_URL}/initiate-payment', 
+                                   json=payment_data, 
+                                   timeout=30)
+            
+            if response.status_code == 200:
+                result = response.json()
+                if result.get('success'):
+                    # Guardar información de la transacción en la sesión
+                    session[f'transaction_{transaction_id}'] = {
+                        'sala_id': sala.id,
+                        'sender_id': user_id,
+                        'amount': payment_data['amount'],
+                        'receiver_wallet': payment_data['receiverWallet'],
+                        'continueUri': result.get('continueUri'),
+                        'continueToken': result.get('continueToken'),
+                        'timestamp': datetime.now().isoformat()
+                    }
+                    
+                    return jsonify({
+                        'success': True,
+                        'transactionId': transaction_id,
+                        'interactionUrl': result['interactionUrl'],
+                        'quote': result['quote']
+                    })
+                else:
+                    return jsonify({'success': False, 'error': result.get('error', 'Error desconocido')}), 500
+            else:
+                return jsonify({'success': False, 'error': 'Error comunicándose con el servicio de pagos'}), 500
+                
+        except requests.RequestException as e:
+            return jsonify({'success': False, 'error': f'Error de conexión: {str(e)}'}), 500
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/payment-callback/<transaction_id>')
+def payment_callback(transaction_id):
+    """Callback después de la autorización del usuario en Open Payments"""
+    try:
+        # Obtener interact_ref de la URL
+        interact_ref = request.args.get('interact_ref')
+        
+        if not interact_ref:
+            flash('Error: No se recibió referencia de interacción', 'error')
+            return redirect(url_for('dashboard'))
+        
+        # Verificar que la transacción exista en la sesión
+        transaction_key = f'transaction_{transaction_id}'
+        if transaction_key not in session:
+            flash('Error: Transacción no encontrada', 'error')
+            return redirect(url_for('dashboard'))
+        
+        transaction_info = session[transaction_key]
+        
+        # Completar el pago con los datos guardados
+        try:
+            import requests
+            response = requests.post(f'{PAYMENTS_SERVICE_URL}/complete-payment/{transaction_id}',
+                                   json={
+                                       'interact_ref': interact_ref,
+                                       'continueUri': transaction_info.get('continueUri'),
+                                       'continueToken': transaction_info.get('continueToken')
+                                   },
+                                   timeout=30)
+            
+            if response.status_code == 200:
+                result = response.json()
+                if result.get('success'):
+                    # Actualizar el estado de la transacción en la base de datos
+                    transaccion = Transaccion.query.filter_by(transaction_id=transaction_id).first()
+                    if transaccion:
+                        transaccion.status = 'completed'
+                        transaccion.payment_id = result.get('paymentId')
+                        transaccion.fecha_completado = datetime.now()
+                        try:
+                            db.session.commit()
+                        except Exception as e:
+                            db.session.rollback()
+                            print(f"Error actualizando transacción: {e}")
+                    
+                    # Limpiar la sesión
+                    session.pop(transaction_key, None)
+                    
+                    flash(f'Pago completado exitosamente! ID: {result["paymentId"]}', 'success')
+                    return redirect(url_for('ver_sala', codigo=Sala.query.get(transaction_info['sala_id']).codigo))
+                else:
+                    # Marcar transacción como fallida
+                    transaccion = Transaccion.query.filter_by(transaction_id=transaction_id).first()
+                    if transaccion:
+                        transaccion.status = 'failed'
+                        transaccion.error_message = result.get('error', 'Error desconocido')
+                        try:
+                            db.session.commit()
+                        except:
+                            db.session.rollback()
+                    
+                    flash(f'Error completando el pago: {result.get("error")}', 'error')
+            else:
+                flash('Error comunicándose con el servicio de pagos', 'error')
+                
+        except requests.RequestException as e:
+            flash(f'Error de conexión: {str(e)}', 'error')
+            
+    except Exception as e:
+        flash(f'Error procesando callback: {str(e)}', 'error')
+    
+    return redirect(url_for('dashboard'))
+
+
+@app.route('/payment-status/<transaction_id>')
+@login_required
+def payment_status(transaction_id):
+    """Obtener estado de una transacción"""
+    try:
+        import requests
+        response = requests.get(f'{PAYMENTS_SERVICE_URL}/transaction-status/{transaction_id}',
+                              timeout=10)
+        
+        if response.status_code == 200:
+            return jsonify(response.json())
+        else:
+            return jsonify({'success': False, 'error': 'Transacción no encontrada'}), 404
+            
+    except requests.RequestException as e:
+        return jsonify({'success': False, 'error': f'Error de conexión: {str(e)}'}), 500
+
+
 # ========== RUTAS DE API Y ADMINISTRACIÓN ==========
 
 @app.route('/static/admin/')
@@ -374,6 +591,30 @@ def api_status():
         "messange": "El servidor de la API está funcionando"
     }
     return jsonify(data)
+
+
+@app.route('/payments-service/health')
+def payments_health():
+    """Verificar estado del servicio de pagos"""
+    try:
+        import requests
+        response = requests.get(f'{PAYMENTS_SERVICE_URL}/health', timeout=5)
+        return jsonify(response.json())
+    except:
+        return jsonify({'status': 'error', 'message': 'Servicio de pagos no disponible'}), 503
+
+
+@app.route('/mis-transacciones')
+@login_required
+def mis_transacciones():
+    """Ver historial de transacciones del usuario"""
+    user_id = session.get('user_id')
+    transacciones = Transaccion.query.filter_by(sender_id=user_id).order_by(Transaccion.fecha_creacion.desc()).all()
+    
+    return jsonify({
+        'success': True,
+        'transacciones': [t.to_dict() for t in transacciones]
+    })
 
 
 @app.route('/usuarios')

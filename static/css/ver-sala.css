@@ -471,45 +471,280 @@ hr {
     border: 1px solid #93c5fd;
 }
 
+/* === ESTILOS DE PAGOS OPEN PAYMENTS === */
+
+.payment-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.payment-section h4 {
+    color: #1e293b;
+    margin: 0 0 20px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.payment-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.payment-field label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.payment-field input {
+    padding: 12px 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: white;
+}
+
+.payment-field input:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.wallet-selector {
+    padding: 12px 16px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s;
+    background: white;
+    width: 100%;
+}
+
+.wallet-selector:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.amount-input {
+    display: flex;
+    align-items: center;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.amount-input:focus-within {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.amount-input .currency {
+    background: #f3f4f6;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.amount-input input {
+    border: none;
+    padding: 12px 16px;
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.amount-input input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Nuevo estilo para precio fijo */
+.amount-display {
+    display: flex;
+    align-items: center;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    gap: 12px;
+}
+
+.price-label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.price-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #059669;
+    background: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #d1fae5;
+}
+
+.payment-field small {
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+
+.btn-payment {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: none;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-payment:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-payment:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.payment-status {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.payment-status.hidden {
+    display: none;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #e5e7eb;
+    border-top: 3px solid #4f46e5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#statusText {
+    font-weight: 500;
+    color: #374151;
+}
+
+/* Panel del vendedor */
+.seller-panel {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    border-radius: 16px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.seller-panel h4 {
+    color: #92400e;
+    margin: 0 0 20px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.payment-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-info p {
+    margin: 0;
+    font-weight: 600;
+    color: #92400e;
+}
+
+.payment-info small {
+    color: #a16207;
+    font-size: 0.85rem;
+}
+
+/* Divisor visual */
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+    margin: 25px 0;
+    border-radius: 1px;
+}
+
 /* Navegación inferior */
 .bottom-nav {
     display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 30px 0;
-    border-top: 1px solid #e5e7eb;
-    margin-top: 40px;
+    justify-content: space-around;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .nav-btn {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    background: white;
-    color: #374151;
+    gap: 5px;
+    color: #6b7280;
     text-decoration: none;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.2s;
+    transition: color 0.3s;
 }
 
 .nav-btn:hover {
-    background: #f9fafb;
-    color: #667eea;
-    border-color: #667eea;
-    transform: translateY(-2px);
+    color: #4f46e5;
 }
 
 .nav-btn i {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
     .main-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
     
     .product-title {
@@ -520,14 +755,25 @@ hr {
     
     .product-price {
         font-size: 2rem;
+        padding: 10px 20px;
     }
     
-    .bottom-nav {
+    .seller-info {
         flex-direction: column;
-        gap: 10px;
+        align-items: flex-start;
+        gap: 15px;
     }
     
-    .nav-btn {
-        justify-content: center;
+    .payment-section {
+        padding: 20px;
+    }
+    
+    .amount-input {
+        flex-direction: column;
+    }
+    
+    .amount-input .currency {
+        width: 100%;
+        text-align: center;
     }
 }

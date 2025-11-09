@@ -109,23 +109,84 @@
                 </div>
 
                 <div class="transaction-section">
-                    {% if not es_creador and not ya_unido and sala.activa %}
-                        <form method="POST" action="{{ url_for('unirse_sala', codigo=sala.codigo) }}">
-                            <button type="submit" class="btn-primary large">
-                                Mostrar interés
-                            </button>
-                        </form>
-                        <p class="disclaimer">Al mostrar interés, podrás contactar directamente con el vendedor</p>
-                    {% elif ya_unido and not es_creador %}
-                        <div class="joined-status">
-                            <p class="success-message">Ya mostraste interés en este producto</p>
-                            <form method="POST" action="{{ url_for('salir_sala', codigo=sala.codigo) }}">
-                                <button type="submit" class="btn-secondary">Retirar interés</button>
+                    {% if not es_creador and sala.activa %}
+                        <!-- Sección de pagos Open Payments - DIRECTO SIN MOSTRAR INTERÉS -->
+                        <div class="payment-section">
+                            <h4>Realizar Pago</h4>
+                            <div class="payment-form">
+                                    <div class="payment-field">
+                                        <label>Billetera del vendedor</label>
+                                        <select id="receiverWallet" class="wallet-selector">
+                                            <option value="$ilp.interledger-test.dev/aledev">aledev (USD)</option>
+                                            <option value="$ilp.interledger-test.dev/aliciadev">aliciadev (USD)</option>
+                                            <option value="$ilp.interledger-test.dev/bobdev">bobdev (USD)</option>
+                                        </select>
+                                        <small>Selecciona una billetera de prueba (todas en USD)</small>
+                                    </div>                                <div class="payment-field">
+                                    <label>Monto a pagar</label>
+                                    <div class="amount-display">
+                                        <span class="price-label">Precio fijo:</span>
+                                        <span class="price-amount">${{ "%.2f"|format(sala.precio) }} USD</span>
+                                        <input type="hidden" id="paymentAmount" value="{{ sala.precio }}">
+                                    </div>
+                                    <small>El precio está establecido por el vendedor y no puede modificarse</small>
+                                </div>
+                                
+                                <button type="button" 
+                                        class="btn-payment" 
+                                        onclick="iniciarPago()"
+                                        id="payBtn">
+                                    Pagar con Open Payments
+                                </button>
+                                
+                                <div id="paymentStatus" class="payment-status hidden">
+                                    <div class="status-indicator">
+                                        <div class="loading-spinner"></div>
+                                        <span id="statusText">Procesando pago...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="divider"></div>
+                        
+                        <!-- Opción alternativa para contactar -->
+                        <div class="contact-section">
+                            {% if not ya_unido %}
+                            <form method="POST" action="{{ url_for('unirse_sala', codigo=sala.codigo) }}">
+                                <button type="submit" class="btn-secondary">
+                                    Solo contactar al vendedor
+                                </button>
                             </form>
+                            <p class="disclaimer">Para contactar sin comprar</p>
+                            {% else %}
+                            <p class="success-message">Ya estás en contacto con el vendedor</p>
+                            <form method="POST" action="{{ url_for('salir_sala', codigo=sala.codigo) }}">
+                                <button type="submit" class="btn-secondary">Salir del chat</button>
+                            </form>
+                            {% endif %}
                         </div>
                     {% elif es_creador %}
                         <div class="owner-status">
                             <p class="info-message">Esta es tu publicación</p>
+                            
+                            <!-- Panel de vendedor -->
+                            <div class="seller-panel">
+                                <h4>Pagos Recibidos</h4>
+                                <div class="payment-info">
+                                    <p><strong>Tu wallet:</strong></p>
+                                    <div class="input-group">
+                                        <input type="text" 
+                                               value="https://ilp.interledger-test.dev/{{ current_user.name.lower() }}dev" 
+                                               readonly>
+                                        <button class="copy-btn" onclick="copiarTexto(this.previousElementSibling)">Copiar</button>
+                                    </div>
+                                    <small>Comparte esta dirección con los compradores</small>
+                                </div>
+                            </div>
+                            
+                            <div class="divider"></div>
+                            
                             <a href="{{ url_for('mis_salas') }}" class="btn-secondary">Ver todas mis publicaciones</a>
                         </div>
                     {% endif %}
@@ -161,8 +222,12 @@
         alert(mensaje);
     }
     
-    function copiarTexto(inputId) {
-        const input = document.getElementById(inputId);
+    function copiarTexto(element) {
+        // Si se pasa un string, buscar el elemento por ID
+        const input = typeof element === 'string' ? 
+                     document.getElementById(element) : 
+                     (element.tagName === 'INPUT' ? element : element.previousElementSibling);
+        
         let texto = input.value;
         
         // Copiar al portapapeles
@@ -171,7 +236,7 @@
             const btn = event.target.closest('button');
             const originalText = btn.textContent;
             
-            btn.textContent = 'Copiado';
+            btn.textContent = '✅ Copiado';
             btn.style.background = '#10b981';
             
             setTimeout(() => {
@@ -187,7 +252,7 @@
             
             const btn = event.target.closest('button');
             const originalText = btn.textContent;
-            btn.textContent = 'Copiado';
+            btn.textContent = '✅ Copiado';
             btn.style.background = '#10b981';
             
             setTimeout(() => {
@@ -195,6 +260,149 @@
                 btn.style.background = '';
             }, 2000);
         });
+    }
+
+    // === FUNCIONES DE PAGO OPEN PAYMENTS ===
+    
+    // Variables de configuración desde el backend (Jinja2 template)
+    // eslint-disable-next-line
+    const PRECIO_FIJO = {{ sala.precio }};
+    // eslint-disable-next-line
+    const SALA_ID = {{ sala.id }};
+    
+    async function iniciarPago() {
+        const receiverWallet = document.getElementById('receiverWallet').value.trim();
+        const amount = parseFloat(document.getElementById('paymentAmount').value);
+        const payBtn = document.getElementById('payBtn');
+        const statusDiv = document.getElementById('paymentStatus');
+        const statusText = document.getElementById('statusText');
+        
+        // Validaciones estrictas
+        if (!receiverWallet) {
+            alert('Error: La billetera del vendedor es requerida');
+            return;
+        }
+        
+        if (!receiverWallet.startsWith('$')) {
+            alert('Error: La billetera debe usar el formato Payment Pointer ($domain/user)');
+            return;
+        }
+        
+        if (!amount || amount <= 0) {
+            alert('Error: Monto inválido detectado');
+            return;
+        }
+        
+        // Verificar que el monto coincida exactamente con el precio de la sala
+        if (Math.abs(amount - PRECIO_FIJO) > 0.01) {
+            alert('Error: El monto ha sido alterado. Recargue la página.');
+            location.reload();
+            return;
+        }
+        
+        // Mostrar estado de carga
+        payBtn.disabled = true;
+        payBtn.textContent = 'Iniciando pago...';
+        statusDiv.classList.remove('hidden');
+        statusText.textContent = 'Conectando con Open Payments...';
+        
+        try {
+            const response = await fetch('/initiate-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    receiverWallet: receiverWallet,
+                    amount: amount,
+                    currency: 'USD',
+                    salaId: SALA_ID
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                statusText.textContent = 'Redirigiendo para autorización...';
+                
+                // Guardar ID de transacción para seguimiento
+                sessionStorage.setItem('currentTransaction', result.transactionId);
+                
+                // Mostrar información de la cotización
+                if (result.quote) {
+                    // Formatear montos correctamente según la escala
+                    const debitAmount = (parseInt(result.quote.debitAmount.value) / Math.pow(10, result.quote.debitAmount.assetScale)).toFixed(2);
+                    const receiveAmount = (parseInt(result.quote.receiveAmount.value) / Math.pow(10, result.quote.receiveAmount.assetScale)).toFixed(2);
+                    
+                    const cotizacion = `Cotización del pago:\n\n` +
+                                     `Envías: ${debitAmount} ${result.quote.debitAmount.assetCode}\n` +
+                                     `Recibe: ${receiveAmount} ${result.quote.receiveAmount.assetCode}\n\n` +
+                                     `¿Proceder con el pago?`;
+                    
+                    if (confirm(cotizacion)) {
+                        // Redirigir al sitio de autorización
+                        window.location.href = result.interactionUrl;
+                    } else {
+                        resetearFormularioPago();
+                    }
+                } else {
+                    // Redirigir directamente si no hay cotización
+                    window.location.href = result.interactionUrl;
+                }
+                
+            } else {
+                throw new Error(result.error || 'Error desconocido');
+            }
+            
+        } catch (error) {
+            console.error('Error iniciando pago:', error);
+            statusText.textContent = `Error: ${error.message}`;
+            
+            setTimeout(() => {
+                resetearFormularioPago();
+            }, 3000);
+        }
+    }
+    
+    function resetearFormularioPago() {
+        const payBtn = document.getElementById('payBtn');
+        const statusDiv = document.getElementById('paymentStatus');
+        
+        payBtn.disabled = false;
+        payBtn.textContent = 'Pagar con Open Payments';
+        statusDiv.classList.add('hidden');
+    }
+    
+    // Verificar si hay una transacción pendiente al cargar la página
+    window.addEventListener('load', function() {
+        const transactionId = sessionStorage.getItem('currentTransaction');
+        if (transactionId) {
+            verificarEstadoTransaccion(transactionId);
+        }
+    });
+    
+    async function verificarEstadoTransaccion(transactionId) {
+        try {
+            const response = await fetch(`/payment-status/${transactionId}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                const statusDiv = document.getElementById('paymentStatus');
+                const statusText = document.getElementById('statusText');
+                
+                statusDiv.classList.remove('hidden');
+                statusText.textContent = `Transacción pendiente: $${result.amount} ${result.currency}`;
+                
+                // Limpiar después de mostrar
+                setTimeout(() => {
+                    sessionStorage.removeItem('currentTransaction');
+                    statusDiv.classList.add('hidden');
+                }, 5000);
+            }
+        } catch (error) {
+            console.error('Error verificando estado:', error);
+            sessionStorage.removeItem('currentTransaction');
+        }
     }
 </script>
 

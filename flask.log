@@ -1,0 +1,16 @@
+nohup: ignoring input
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 572-285-242
+127.0.0.1 - - [09/Nov/2025 04:47:58] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2025 04:49:42] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2025 04:49:50] "GET /?id=959ac285-7a7f-44db-96b8-5e94fece5648&vscodeBrowserReqId=1762685390314 HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2025 04:49:50] "GET /static/css/base.css HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2025 04:49:50] "GET /static/css/styles-principal.css HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2025 04:49:50] "GET /static/css/createChat.css HTTP/1.1" 200 -
+127.0.0.1 - - [09/Nov/2025 04:50:23] "GET / HTTP/1.1" 200 -

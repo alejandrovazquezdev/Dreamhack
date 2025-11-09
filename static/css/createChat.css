@@ -1,0 +1,90 @@
+.form-container {
+    background-color: var(--color-primary-main);
+    color: var(--color-text-light);
+    padding: 32px;
+    border-radius: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    /* Centra el contenedor */
+    box-shadow: 0 10px 30px rgba(142, 45, 226, 0.3);
+}
+
+.form-container h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.form-subtitle {
+    font-size: 0.9rem;
+    color: #e0c8f5;
+    /* Un lila claro */
+    margin-top: 8px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Rejilla responsive del formulario */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Dos columnas */
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: var(--border-radius-nav);
+    font-family: var(--font-family-base);
+    font-size: 1rem;
+    color: var(--color-text-dark);
+}
+
+.form-group textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* Acomoda el input de Descripción para que ocupe el espacio */
+.form-group.full-height {
+    height: 100%;
+}
+
+.form-group.full-height textarea {
+    height: 100%;
+}
+
+/* Pie del formulario con botones */
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-primary-nav);
+}
+
+/* --- Media Queries para Responsividad --- */
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+        /* Una columna */
+    }
+}
