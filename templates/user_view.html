@@ -16,7 +16,7 @@
                 <div class="sidebar-avatar">
                     <i class="fa-solid fa-user"></i>
                 </div>
-                <span class="sidebar-username">Nombre</span>
+                <span class="sidebar-username">{{ user.name if user else (current_user.name if current_user else 'Usuario') }}</span>
             </div>
 
             <nav class="sidebar-nav">
@@ -30,7 +30,7 @@
             </nav>
 
             <footer class="sidebar-footer">
-                <a href="#">Cerrar sesión</a>
+                <a href="{{ url_logout }}">Cerrar sesión</a>
             </footer>
 
         </aside>
