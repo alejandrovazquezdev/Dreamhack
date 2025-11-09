@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
     name VARCHAR(255) NOT NULL,
     lastanme VARCHAR(255) NOT NULL,
     lastname2 VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL
+    email VARCHAR(255) UNIQUE NOT NULL,
+    wallet_link VARCHAR(500)
 );
 
 -- Insertar datos de la imagen de DBeaver
