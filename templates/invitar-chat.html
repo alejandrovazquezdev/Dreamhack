@@ -47,15 +47,15 @@
                     <div class="share-item">
                         <label for="link-input">Link:</label>
                         <div class="share-input-wrapper">
-                            <input type="text" id="link-input" value="Shifting.com/user/342352532" readonly>
+                            <input type="text" id="link-input" value="{{ sala.get_link() }}" readonly>
                             <div class="share-actions">
-                                <button class="btn-icon-share" aria-label="Copiar link">
+                                <button class="btn-icon-share" onclick="copiarTexto('link-input')" aria-label="Copiar link">
                                     <i class="fa-solid fa-copy"></i>
                                 </button>
-                                <button class="btn-icon-share" aria-label="Compartir en WhatsApp">
+                                <button class="btn-icon-share" onclick="compartirWhatsApp('link-input')" aria-label="Compartir en WhatsApp">
                                     <i class="fa-brands fa-whatsapp"></i>
                                 </button>
-                                <button class="btn-icon-share" aria-label="Compartir en Messenger">
+                                <button class="btn-icon-share" onclick="compartirMessenger('link-input')" aria-label="Compartir en Messenger">
                                     <i class="fa-brands fa-facebook-messenger"></i>
                                 </button>
                             </div>
@@ -65,15 +65,15 @@
                     <div class="share-item">
                         <label for="code-input">Código de chat:</label>
                         <div class="share-input-wrapper">
-                            <input type="text" id="code-input" value="54763473" readonly>
+                            <input type="text" id="code-input" value="{{ sala.codigo }}" readonly>
                             <div class="share-actions">
-                                <button class="btn-icon-share" aria-label="Copiar código">
+                                <button class="btn-icon-share" onclick="copiarTexto('code-input')" aria-label="Copiar código">
                                     <i class="fa-solid fa-copy"></i>
                                 </button>
-                                <button class="btn-icon-share" aria-label="Compartir en WhatsApp">
+                                <button class="btn-icon-share" onclick="compartirWhatsApp('code-input')" aria-label="Compartir en WhatsApp">
                                     <i class="fa-brands fa-whatsapp"></i>
                                 </button>
-                                <button class="btn-icon-share" aria-label="Compartir en Messenger">
+                                <button class="btn-icon-share" onclick="compartirMessenger('code-input')" aria-label="Compartir en Messenger">
                                     <i class="fa-brands fa-facebook-messenger"></i>
                                 </button>
                             </div>
@@ -95,5 +95,34 @@
 
         </main>
     </div>
+
+    <script>
+        // Función para copiar texto al portapapeles
+        function copiarTexto(inputId) {
+            const input = document.getElementById(inputId);
+            input.select();
+            input.setSelectionRange(0, 99999); // Para móviles
+            
+            navigator.clipboard.writeText(input.value).then(() => {
+                alert('✓ Copiado al portapapeles');
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+            });
+        }
+
+        // Función para compartir en WhatsApp
+        function compartirWhatsApp(inputId) {
+            const input = document.getElementById(inputId);
+            const texto = encodeURIComponent(`¡Únete a mi sala de negociación en Shifting! ${input.value}`);
+            window.open(`https://wa.me/?text=${texto}`, '_blank');
+        }
+
+        // Función para compartir en Messenger
+        function compartirMessenger(inputId) {
+            const input = document.getElementById(inputId);
+            const link = encodeURIComponent(input.value);
+            window.open(`https://www.facebook.com/dialog/send?link=${link}&app_id=YOUR_APP_ID&redirect_uri=${window.location.href}`, '_blank');
+        }
+    </script>
 
 {% endblock %}

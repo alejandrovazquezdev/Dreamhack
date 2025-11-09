@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from flask_migrate import Migrate
 from db import db
-from models import Usuarios
+from models import Usuarios, Sala
 from forms import UserFrom, UserSignupForm, UserLoginForm
 from functools import wraps
 
@@ -173,20 +173,28 @@ def dashboard():
 def crateChat():
     """Formulario para crear un nuevo chat de negociación"""
     if request.method == 'POST':
-        # Aquí iría la lógica para guardar el chat en la BD
-        # Por ahora, solo redirigimos a invitar
-        producto = request.form.get('nombre-producto')
+        # Obtener datos del formulario
+        nombre_producto = request.form.get('nombre-producto')
         precio = request.form.get('precio-producto')
+        condicion = request.form.get('condicion-producto')
+        descripcion = request.form.get('descripcion-producto')
         
-        # Guardar datos en la sesión temporalmente (idealmente en BD)
-        session['temp_chat'] = {
-            'producto': producto,
-            'precio': precio,
-            'condicion': request.form.get('condicion-producto'),
-            'descripcion': request.form.get('descripcion-producto')
-        }
+        # Crear nueva sala
+        nueva_sala = Sala()
+        nueva_sala.codigo = Sala.generar_codigo()
+        nueva_sala.nombre_producto = nombre_producto
+        nueva_sala.precio = float(precio)
+        nueva_sala.condicion = condicion
+        nueva_sala.descripcion = descripcion
+        nueva_sala.creador_id = session['user_id']
         
-        flash(f'Chat creado para: {producto}', 'success')
+        db.session.add(nueva_sala)
+        db.session.commit()
+        
+        # Guardar ID de la sala en sesión para mostrarla
+        session['ultima_sala_id'] = nueva_sala.id
+        
+        flash(f'¡Sala creada exitosamente! Código: {nueva_sala.codigo}', 'success')
         return redirect(url_for('inviteChat'))
     
     return render_template('crear-chat.html')
@@ -196,9 +204,20 @@ def crateChat():
 @login_required
 def inviteChat():
     """Página para compartir link/código del chat creado"""
-    # Obtener datos temporales del chat (en producción vendría de BD)
-    chat_data = session.get('temp_chat', {})
-    return render_template('invitar-chat.html', chat=chat_data)
+    # Obtener la última sala creada
+    sala_id = session.get('ultima_sala_id')
+    
+    if not sala_id:
+        flash('No hay ninguna sala creada. Crea una primero.', 'warning')
+        return redirect(url_for('crateChat'))
+    
+    sala = Sala.query.get(sala_id)
+    
+    if not sala:
+        flash('Sala no encontrada.', 'error')
+        return redirect(url_for('crateChat'))
+    
+    return render_template('invitar-chat.html', sala=sala)
 
 
 # ========== RUTAS DE API Y ADMINISTRACIÓN ==========

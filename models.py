@@ -1,7 +1,9 @@
 from db import db
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import Optional
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
+import secrets
 
 # Modelo de datos
 
@@ -35,3 +37,40 @@ class Usuarios(db.Model):
             f'correo Electrónico{self.email}'
             f'wallet_link{self.wallet_link}'
         )
+
+
+class Sala(db.Model):
+    """Modelo para salas de negociación P2P"""
+    __tablename__ = 'salas'
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    codigo: Mapped[str] = mapped_column(unique=True, index=True)  # Código único de 8 dígitos
+    
+    # Información del producto
+    nombre_producto: Mapped[str] = mapped_column()
+    descripcion: Mapped[Optional[str]] = mapped_column(nullable=True)
+    precio: Mapped[float] = mapped_column()
+    condicion: Mapped[str] = mapped_column()  # 'Nuevo' o 'Usado'
+    
+    # Relación con el creador
+    creador_id: Mapped[int] = mapped_column(db.ForeignKey('usuarios.id'))
+    
+    # Metadatos
+    fecha_creacion: Mapped[datetime] = mapped_column(default=datetime.utcnow)
+    activa: Mapped[bool] = mapped_column(default=True)
+    
+    @staticmethod
+    def generar_codigo():
+        """Genera un código único de 8 dígitos"""
+        while True:
+            codigo = ''.join([str(secrets.randbelow(10)) for _ in range(8)])
+            # Verificar que no exista
+            if not Sala.query.filter_by(codigo=codigo).first():
+                return codigo
+    
+    def get_link(self):
+        """Retorna el link completo para compartir"""
+        return f"Shifting.com/user/{self.codigo}"
+    
+    def __str__(self):
+        return f'Sala {self.codigo} - {self.nombre_producto} (${self.precio})'
