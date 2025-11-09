@@ -116,12 +116,18 @@
                             <div class="payment-form">
                                     <div class="payment-field">
                                         <label>Billetera del vendedor</label>
-                                        <select id="receiverWallet" class="wallet-selector">
-                                            <option value="$ilp.interledger-test.dev/aledev">aledev (USD)</option>
-                                            <option value="$ilp.interledger-test.dev/aliciadev">aliciadev (USD)</option>
-                                            <option value="$ilp.interledger-test.dev/bobdev">bobdev (USD)</option>
-                                        </select>
-                                        <small>Selecciona una billetera de prueba (todas en USD)</small>
+                                        {% if creador.wallet_link %}
+                                            <div class="input-group">
+                                                <input type="text" id="receiverWallet" value="{{ creador.wallet_link }}" readonly>
+                                            </div>
+                                            <small>Wallet del vendedor configurada</small>
+                                        {% else %}
+                                            <select id="receiverWallet" class="wallet-selector">
+                                                <option value="$ilp.interledger-test.dev/aliciadev">aliciadev (EUR)</option>
+                                                <option value="$ilp.interledger-test.dev/bobdev">bobdev (EUR)</option>
+                                            </select>
+                                            <small>El vendedor no configuró su wallet. Selecciona una de prueba</small>
+                                        {% endif %}
                                     </div>                                <div class="payment-field">
                                     <label>Monto a pagar</label>
                                     <div class="amount-display">

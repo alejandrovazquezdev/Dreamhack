@@ -4,17 +4,17 @@
 
 El sistema permite a los usuarios crear "salas" para productos/servicios, donde los compradores pueden realizar pagos seguros usando sus wallets de Interledger, eliminando intermediarios y comisiones excesivas.
 
-## 🌟 Características Principales
+## Características Principales
 
-- ✅ **Pagos P2P seguros** con Open Payments SDK
-- ✅ **Interfaz profesional** sin emojis, diseño limpio
-- ✅ **Precios fijos** no manipulables por usuarios
-- ✅ **Validación estricta** de montos y Payment Pointers
-- ✅ **Rastreo de transacciones** en base de datos
-- ✅ **Sistema de salas** para organizar productos/servicios
-- ✅ **Autenticación de usuarios** con sesiones seguras
+- Pagos P2P seguros con Open Payments SDK
+- Interfaz profesional sin emojis, diseño limpio
+- Precios fijos no manipulables por usuarios
+- Validación estricta de montos y Payment Pointers
+- Rastreo de transacciones en base de datos
+- Sistema de salas para organizar productos/servicios
+- Autenticación de usuarios con sesiones seguras
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Dreamhack/
@@ -23,8 +23,8 @@ Dreamhack/
 ├── db.py                       # Configuración SQLAlchemy
 ├── forms.py                    # Formularios Flask-WTF
 ├── init_db.sql                 # Script de inicialización de BD
-├── start-services.sh           # 🚀 Script para iniciar todo
-├── stop-services.sh            # 🛑 Script para detener servicios
+├── start-services.sh           # Script para iniciar todo
+├── stop-services.sh            # Script para detener servicios
 ├── templates/                  # Plantillas HTML
 │   ├── index.html
 │   ├── login.html
@@ -41,7 +41,7 @@ Dreamhack/
 └── venv/                       # Entorno virtual Python
 ```
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 ### Backend
 - **Python 3.13** con Flask 3.1.2
@@ -58,7 +58,7 @@ Dreamhack/
 - HTML5, CSS3, JavaScript vanilla
 - Diseño responsive profesional
 
-## ⚙️ Instalación y Configuración
+## Instalación y Configuración
 
 ### Prerrequisitos
 
@@ -115,7 +115,7 @@ Para obtener credenciales de prueba:
 - Crea wallets de prueba (aledev, aliciadev, bobdev, etc.)
 - Descarga las claves privadas
 
-## 🚀 Iniciar la Aplicación
+## Iniciar la Aplicación
 
 ### Opción 1: Script automático (Recomendado)
 
@@ -151,7 +151,7 @@ curl http://localhost:3001/health
 curl http://127.0.0.1:5000
 ```
 
-## 🛑 Detener Servicios
+## Detener Servicios
 
 ```bash
 ./stop-services.sh
@@ -163,7 +163,7 @@ pkill -f "node.*payment-service"
 pkill -f "python.*app.py"
 ```
 
-## 🎯 Uso de la Aplicación
+## Uso de la Aplicación
 
 ### 1. Registro e Inicio de Sesión
 - Ve a http://127.0.0.1:5000
@@ -184,7 +184,7 @@ pkill -f "python.*app.py"
 - Autoriza en la página de Interledger
 - El sistema completa automáticamente la transacción
 
-## 📊 Endpoints API
+## Endpoints API
 
 ### Flask Backend (Puerto 5000)
 
@@ -207,7 +207,7 @@ pkill -f "python.*app.py"
 | POST | `/initiate-payment` | Crear grant y quote de pago |
 | POST | `/complete-payment/:id` | Completar pago autorizado |
 
-## 🗃️ Base de Datos
+## Base de Datos
 
 ### Tablas Principales
 
@@ -220,16 +220,16 @@ pkill -f "python.*app.py"
 **transaccion**
 - `id`, `transaction_id`, `sala_id`, `sender_id`, `receiver_wallet`, `amount`, `currency`, `status`
 
-## 🔐 Seguridad
+## Seguridad
 
-- ✅ Contraseñas hasheadas con bcrypt
-- ✅ Sesiones Flask seguras
-- ✅ Validación de montos en backend
-- ✅ Payment Pointer validado ($domain/user)
-- ✅ CORS configurado correctamente
-- ⚠️ **NO usar en producción** sin configurar variables de entorno
+- Contraseñas hasheadas con bcrypt
+- Sesiones Flask seguras
+- Validación de montos en backend
+- Payment Pointer validado ($domain/user)
+- CORS configurado correctamente
+- ADVERTENCIA: NO usar en producción sin configurar variables de entorno
 
-## 🐛 Solución de Problemas
+## Solución de Problemas
 
 ### Payment Service no inicia
 ```bash
@@ -248,12 +248,12 @@ source venv/bin/activate
 pip install -r requeriments.txt
 ```
 
-## 📝 Logs
+## Logs
 
 - **Payment Service**: `static/admin/payment-service.log`
 - **Flask Backend**: `flask.log`
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Probar pago de prueba
@@ -266,7 +266,7 @@ curl -X POST http://localhost:3001/initiate-payment \
   }'
 ```
 
-## 🚧 Roadmap
+## Roadmap
 
 - [ ] Implementar outgoing payment completo
 - [ ] Agregar verificación de pagos completados
@@ -275,7 +275,7 @@ curl -X POST http://localhost:3001/initiate-payment \
 - [ ] Panel de administración
 - [ ] Tests automatizados
 
-## 👥 Contribuciones
+## Contribuciones
 
 ---
 
