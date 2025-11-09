@@ -1,7 +1,7 @@
 {% extends 'base-template-user.html' %}
     
     {% block styles %}
-        
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/salas.css') }}">
     {% endblock %}
         
 
@@ -39,7 +39,7 @@
                     Intenta ser lo mas preciso posible en la información que ingreses
                 </p>
 
-                <form method="POST" action="{{ url_for('crateChat') }}">
+                <form method="POST" action="{{ url_for('crear_sala') }}">
                     <div class="form-grid">
                         
                         <div class="form-column">

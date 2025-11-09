@@ -47,8 +47,8 @@ def inject_urls():
         url_login=url_for('signup'),
         url_logout=url_for('logout'),
         url_dashboard=url_for('dashboard'),
-        url_crear_chat=url_for('crateChat'),
-        url_invitar_chat=url_for('inviteChat'),
+        url_crear_sala=url_for('crear_sala'),
+        url_compartir_sala=url_for('compartir_sala'),
         url_mis_salas=url_for('mis_salas'),
     )
 
@@ -63,10 +63,10 @@ def fix_html_links(response):
         replacements = {
             'href="index.html"': f'href="{url_for("dashboard")}"',
             "href='index.html'": f"href='{url_for('dashboard')}'",
-            'href="crear-chat.html"': f'href="{url_for("crateChat")}"',
-            "href='crear-chat.html'": f"href='{url_for('crateChat')}'",
-            'href="invitar-chat.html"': f'href="{url_for("inviteChat")}"',
-            "href='invitar-chat.html'": f"href='{url_for('inviteChat')}'",
+            'href="crear-sala.html"': f'href="{url_for("crear_sala")}"',
+            "href='crear-sala.html'": f"href='{url_for('crear_sala')}'",
+            'href="compartir-sala.html"': f'href="{url_for("compartir_sala")}"',
+            "href='compartir-sala.html'": f"href='{url_for('compartir_sala')}'",
             'href="signup.html"': f'href="{url_for("signup")}"',
             "href='signup.html'": f"href='{url_for('signup')}'",
             'href="login.html"': f'href="{url_for("login")}"',
@@ -169,10 +169,10 @@ def dashboard():
     return render_template('user_view.html', user=user)
 
 
-@app.route('/crear-chat', methods=['GET', 'POST'])
+@app.route('/crear-sala', methods=['GET', 'POST'])
 @login_required
-def crateChat():
-    """Formulario para crear un nuevo chat de negociación"""
+def crear_sala():
+    """Formulario para crear una nueva sala de negociación"""
     if request.method == 'POST':
         # Obtener datos del formulario
         nombre_producto = request.form.get('nombre-producto')
@@ -196,15 +196,15 @@ def crateChat():
         session['ultima_sala_id'] = nueva_sala.id
         
         flash(f'¡Sala creada exitosamente! Código: {nueva_sala.codigo}', 'success')
-        return redirect(url_for('inviteChat'))
+        return redirect(url_for('compartir_sala'))
     
-    return render_template('crear-chat.html')
+    return render_template('crear-sala.html')
 
 
-@app.route('/invitar-chat')
+@app.route('/compartir-sala')
 @login_required
-def inviteChat():
-    """Página para compartir link/código del chat creado"""
+def compartir_sala():
+    """Página para compartir link/código de la sala creada"""
     # Obtener la última sala creada
     sala_id = session.get('ultima_sala_id')
     
@@ -212,7 +212,7 @@ def inviteChat():
     
     if not sala_id:
         flash('No hay ninguna sala creada. Crea una primero.', 'warning')
-        return redirect(url_for('crateChat'))
+        return redirect(url_for('crear_sala'))
     
     sala = Sala.query.get(sala_id)
     
@@ -222,9 +222,9 @@ def inviteChat():
     
     if not sala:
         flash('Sala no encontrada.', 'error')
-        return redirect(url_for('crateChat'))
+        return redirect(url_for('crear_sala'))
     
-    return render_template('invitar-chat.html', sala=sala)
+    return render_template('compartir-sala.html', sala=sala)
 
 
 @app.route('/sala/<codigo>')

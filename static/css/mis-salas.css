@@ -1,0 +1,116 @@
+/* Estilos para la página de Mis Salas */
+
+.salas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.sala-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.sala-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.sala-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sala-card-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    flex: 1;
+}
+
+.sala-precio {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: rgba(255,255,255,0.2);
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+.sala-card-body {
+    padding: 20px;
+}
+
+.sala-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    color: #555;
+}
+
+.sala-info-item i {
+    color: #667eea;
+    width: 20px;
+}
+
+.sala-descripcion {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 10px;
+}
+
+.sala-descripcion i {
+    color: #667eea;
+    margin-top: 3px;
+}
+
+.sala-descripcion p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.sala-card-footer {
+    padding: 15px 20px;
+    background: #f9fafb;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    flex: 1;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #ccc;
+}
+
+.empty-state h3 {
+    margin: 20px 0 10px;
+    color: #333;
+}
+
+.empty-state p {
+    margin-bottom: 30px;
+}

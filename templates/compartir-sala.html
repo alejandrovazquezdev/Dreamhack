@@ -2,7 +2,7 @@
 
     
     {% block styles %}
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/salas.css') }}">
     {% endblock %}
 
     
@@ -38,7 +38,7 @@
                     <h2>2. Comparte el link</h2>
                     <p class="content-card-subtitle">
                         <i class="fa-solid fa-diamond"></i>
-                        Comparte el link o el código de chat con la persona que deseas negociar
+                        Comparte el link o el código de sala con la persona que deseas negociar
                     </p>
                 </div>
 
@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="share-item">
-                        <label for="code-input">Código de chat:</label>
+                        <label for="code-input">Código de sala:</label>
                         <div class="share-input-wrapper">
                             <input type="text" id="code-input" value="{{ sala.codigo }}" readonly>
                             <div class="share-actions">
