@@ -43,8 +43,8 @@ def inject_urls():
         is_authenticated='user_id' in session,
         # URLs principales
         url_inicio=url_for('inicio'),
-        url_signup=url_for('signup'),
-        url_login=url_for('login'),
+        url_signup=url_for('login'),
+        url_login=url_for('signup'),
         url_logout=url_for('logout'),
         url_dashboard=url_for('dashboard'),
         url_crear_chat=url_for('crateChat'),
